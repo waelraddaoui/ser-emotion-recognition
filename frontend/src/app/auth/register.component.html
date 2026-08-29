@@ -1,0 +1,36 @@
+<div class="auth-page">
+  <div class="auth-card glass-panel">
+    <div class="auth-header">
+      <h1>{{ 'AUTH.REGISTER_TITLE' | translate }}</h1>
+      <p>{{ 'AUTH.REGISTER_DESC' | translate }}</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label class="field">
+        <span>{{ 'AUTH.EMAIL' | translate }}</span>
+        <input type="email" formControlName="email" [placeholder]="'AUTH.EMAIL_PLACEHOLDER' | translate">
+      </label>
+
+      <label class="field">
+        <span>{{ 'AUTH.PASSWORD' | translate }}</span>
+        <input type="password" formControlName="password" [placeholder]="'AUTH.PASSWORD_PLACEHOLDER' | translate">
+      </label>
+
+      <label class="field">
+        <span>{{ 'AUTH.CONFIRM_PASSWORD' | translate }}</span>
+        <input type="password" formControlName="confirmPassword" [placeholder]="'AUTH.PASSWORD_PLACEHOLDER' | translate">
+      </label>
+
+      <button type="submit" class="btn-primary" [disabled]="isLoading">
+        {{ isLoading ? ('AUTH.LOADING' | translate) : ('AUTH.REGISTER_TITLE' | translate) }}
+      </button>
+
+      <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+      <p class="switch">
+        {{ 'AUTH.ALREADY_REGISTERED' | translate }}
+        <a routerLink="/login">{{ 'AUTH.LOGIN_LINK' | translate }}</a>
+      </p>
+    </form>
+  </div>
+</div>

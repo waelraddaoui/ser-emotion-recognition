@@ -1,0 +1,53 @@
+<div class="page">
+  <section class="glass-panel profile-card">
+    <h1>{{ 'PROFILE.TITLE' | translate }}</h1>
+    <div class="profile-grid">
+      <div>
+        <span class="label">{{ 'AUTH.EMAIL' | translate }}</span>
+        <p>{{ user?.email }}</p>
+      </div>
+      <div>
+        <span class="label">{{ 'PROFILE.ROLE' | translate }}</span>
+        <p>{{ user?.role }}</p>
+      </div>
+      <div>
+        <span class="label">{{ 'PROFILE.STATUS' | translate }}</span>
+        <p>{{ user?.is_active ? ('PROFILE.ACTIVE' | translate) : ('PROFILE.INACTIVE' | translate) }}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="glass-panel history-card">
+    <div class="history-header">
+      <h2>{{ 'PROFILE.HISTORY_TITLE' | translate }}</h2>
+      <button class="btn-secondary" (click)="loadPredictions()" [disabled]="isLoading">
+        {{ isLoading ? ('AUTH.LOADING' | translate) : ('PROFILE.REFRESH' | translate) }}
+      </button>
+    </div>
+
+    <p class="error" *ngIf="errorMsg">{{ errorMsg }}</p>
+
+    <div class="empty" *ngIf="!predictions.length && !isLoading && !errorMsg">
+      {{ 'PROFILE.NO_PREDICTIONS' | translate }}
+    </div>
+
+    <div class="history-list" *ngIf="predictions.length">
+      <div class="history-item" *ngFor="let item of predictions">
+        <div class="history-details">
+          <div class="emotion-row">
+            <span class="emoji">{{ item.emoji || '🎙️' }}</span>
+            <h3>{{ item.emotion }}</h3>
+            <span class="source-badge">{{ sourceLabel(item.source) }}</span>
+          </div>
+          <p *ngIf="item.original_name" class="filename">{{ item.original_name }}</p>
+          <p>{{ 'PROFILE.CONFIDENCE' | translate }}: {{ (item.confidence * 100) | number:'1.1-1' }}%</p>
+          <p class="muted">{{ item.created_at | date:'medium' }}</p>
+        </div>
+        <div class="audio" *ngIf="item.audio_id">
+          <audio *ngIf="item.playbackUrl" [src]="item.playbackUrl" controls></audio>
+          <p class="muted audio-loading" *ngIf="!item.playbackUrl">{{ 'PROFILE.LOADING_AUDIO' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

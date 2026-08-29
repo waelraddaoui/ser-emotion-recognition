@@ -1,0 +1,75 @@
+.auth-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem 4rem;
+}
+
+.auth-card {
+  width: min(420px, 92vw);
+  padding: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.auth-header h1 {
+  font-size: 2rem;
+  margin-bottom: 0.4rem;
+}
+
+.auth-header p {
+  color: var(--text-muted);
+  margin-bottom: 1.8rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.2rem;
+}
+
+.field span {
+  color: #cbd5f5;
+  font-size: 0.9rem;
+}
+
+.field input {
+  background: rgba(8, 11, 24, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  color: var(--text-main);
+  outline: none;
+}
+
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.btn-primary {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.error {
+  margin-top: 0.8rem;
+  color: #fca5a5;
+}
+
+.switch {
+  margin-top: 1.2rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.switch a {
+  color: var(--primary);
+  text-decoration: none;
+  margin-left: 0.25rem;
+}
+
+.switch a:hover {
+  text-decoration: underline;
+}

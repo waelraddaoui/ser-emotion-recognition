@@ -1,0 +1,52 @@
+<!-- Animated Background -->
+<div class="animated-bg" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+  <div class="orb orb-4"></div>
+  <div class="wave-bars">
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <div class="grid-overlay"></div>
+</div>
+
+<div class="shell">
+  <nav class="topbar glass-panel">
+    <div class="brand">
+      <span class="logo">🎙️</span>
+      <div>
+        <strong>SER Studio</strong>
+        <small>Emotion AI</small>
+      </div>
+    </div>
+
+    <div class="links" *ngIf="isLoggedIn">
+      <a routerLink="/studio" routerLinkActive="active">{{ 'NAV.STUDIO' | translate }}</a>
+      <a routerLink="/profile" routerLinkActive="active">{{ 'NAV.PROFILE' | translate }}</a>
+      <a routerLink="/admin" routerLinkActive="active" *ngIf="isAdmin">{{ 'NAV.ADMIN' | translate }}</a>
+    </div>
+
+    <div class="actions">
+      <button class="chip" (click)="toggleTheme()" title="Changer le thème">
+        {{ (isDarkMode ? 'NAV.THEME_LIGHT' : 'NAV.THEME_DARK') | translate }}
+      </button>
+      <button class="chip" (click)="toggleLanguage()" title="Changer la langue">
+        {{ currentLanguage === 'fr' ? '🇬🇧 EN' : '🇫🇷 FR' }}
+      </button>
+      <span class="user" *ngIf="isLoggedIn">{{ userEmail }}</span>
+      <a class="chip" routerLink="/login" *ngIf="!isLoggedIn">{{ 'NAV.LOGIN' | translate }}</a>
+      <a class="chip" routerLink="/register" *ngIf="!isLoggedIn">{{ 'NAV.REGISTER' | translate }}</a>
+      <button class="chip danger" (click)="logout()" *ngIf="isLoggedIn">{{ 'NAV.LOGOUT' | translate }}</button>
+    </div>
+  </nav>
+
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+</div>
+

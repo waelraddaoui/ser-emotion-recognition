@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+.venv*/
+venv/
+
+# Local application state
+*.db
+backend/.env
+backend/uploads/
+
+# Node / Angular / Capacitor generated output
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/cache/
+frontend/android/app/build/
+frontend/android/build/
+
+# Large generated ML artifacts and datasets
+data/
+models/
+*.npy
+*.pkl
+*.pth
+*.keras
+*.safetensors
+
+# Generated reports, logs, and screenshots
+*.log
+*.docx
+*.pdf
+figures/screenshots/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

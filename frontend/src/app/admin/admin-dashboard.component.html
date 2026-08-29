@@ -1,0 +1,807 @@
+<div class="admin-container">
+  <header class="admin-header glass-panel">
+    <h1>{{ 'ADMIN.TITLE' | translate }}</h1>
+    <p>{{ 'ADMIN.SUBTITLE' | translate }}</p>
+  </header>
+
+  <nav class="admin-nav glass-panel">
+    <button class="nav-btn" [class.active]="activeSection === 'dashboard'" (click)="setActiveSection('dashboard')">
+      📊 {{ 'ADMIN.TAB_DASHBOARD' | translate }}
+    </button>
+    <button class="nav-btn" [class.active]="activeSection === 'explorer'" (click)="setActiveSection('explorer')">
+      🔍 {{ 'ADMIN.TAB_EXPLORER' | translate }}
+    </button>
+    <button class="nav-btn" [class.active]="activeSection === 'performance'" (click)="setActiveSection('performance')">
+      📈 {{ 'ADMIN.TAB_PERFORMANCE' | translate }}
+    </button>
+    <button class="nav-btn" [class.active]="activeSection === 'reports'" (click)="setActiveSection('reports')">
+      🚩 {{ 'ADMIN.TAB_REPORTS' | translate }}
+    </button>
+    <button class="nav-btn" [class.active]="activeSection === 'users'" (click)="setActiveSection('users')">
+      👥 {{ 'ADMIN.TAB_USERS' | translate }}
+    </button>
+    <button class="nav-btn" [class.active]="activeSection === 'batch'" (click)="setActiveSection('batch')">
+      🤖 {{ 'ADMIN.TAB_TRAINING' | translate }}
+    </button>
+  </nav>
+
+  <main class="admin-main">
+    <!-- DASHBOARD SECTION -->
+    <section *ngIf="activeSection === 'dashboard'" class="section">
+      <div *ngIf="dashboardLoading" class="loading">⏳ Loading analytics...</div>
+      
+      <div *ngIf="dashboardData && !dashboardLoading" class="dashboard-grid">
+        <!-- KPIs -->
+        <div class="kpi-card glass-panel">
+          <div class="kpi-value">{{ dashboardData.total_predictions }}</div>
+          <div class="kpi-label">Total Predictions</div>
+        </div>
+        
+        <div class="kpi-card glass-panel">
+          <div class="kpi-value">{{ dashboardData.unique_users }}</div>
+          <div class="kpi-label">Active Users</div>
+        </div>
+        
+        <div class="kpi-card glass-panel">
+          <div class="kpi-value">{{ (dashboardData.avg_confidence * 100 | number:'1.1-1') }}%</div>
+          <div class="kpi-label">Avg Confidence</div>
+        </div>
+
+        <!-- Emotion Distribution -->
+        <div class="chart-card glass-panel">
+          <h3>🎭 Emotion Distribution</h3>
+          <div class="emotion-list">
+            <div 
+              *ngFor="let emotion of dashboardData.emotions" 
+              class="emotion-item"
+              [style.borderLeftColor]="getEmotionColor(emotion.emotion)">
+              <span class="emoji">{{ getEmotionEmoji(emotion.emotion) }}</span>
+              <div class="emotion-info">
+                <div class="emotion-name">{{ emotion.emotion }}</div>
+                <div class="emotion-bar">
+                  <div 
+                    class="emotion-bar-fill" 
+                    [style.width]="emotion.percentage + '%'"
+                    [style.backgroundColor]="getEmotionColor(emotion.emotion)"></div>
+                </div>
+              </div>
+              <div class="emotion-stats">{{ emotion.count }} ({{ emotion.percentage }}%)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confidence Distribution -->
+        <div class="chart-card glass-panel">
+          <h3>📊 Confidence Metrics</h3>
+          <div class="metrics-display">
+            <div class="metric">
+              <span class="metric-label">Average</span>
+              <span class="metric-value">{{ (dashboardData.confidence_metrics.average * 100 | number:'1.1-1') }}%</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Minimum</span>
+              <span class="metric-value">{{ (dashboardData.confidence_metrics.min * 100 | number:'1.1-1') }}%</span>
+            </div>
+            <div class="metric">
+              <span class="metric-label">Maximum</span>
+              <span class="metric-value">{{ (dashboardData.confidence_metrics.max * 100 | number:'1.1-1') }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPLORER SECTION -->
+    <section *ngIf="activeSection === 'explorer'" class="section">
+      <div class="explorer-controls glass-panel">
+        <h3>🔍 Prediction Explorer</h3>
+        
+        <div class="filter-group">
+          <label>Filter by Emotion</label>
+          <select [(ngModel)]="selectedEmotion" (change)="filterPredictions()" class="filter-select">
+            <option value="all">All Emotions</option>
+            <option value="Neutral">😐 Neutral</option>
+            <option value="Calm">😌 Calm</option>
+            <option value="Happy">😊 Happy</option>
+            <option value="Sad">😢 Sad</option>
+            <option value="Angry">😠 Angry</option>
+            <option value="Fearful">😨 Fearful</option>
+            <option value="Disgust">🤢 Disgust</option>
+            <option value="Surprised">😲 Surprised</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Min Confidence</label>
+          <input 
+            type="range" 
+            min="0" 
+            max="100" 
+            [(ngModel)]="minConfidence" 
+            (change)="filterPredictions()"
+            class="filter-range">
+          <span>{{ minConfidence }}%</span>
+        </div>
+
+        <button (click)="exportData()" class="btn-export">📥 Export CSV</button>
+      </div>
+
+      <div *ngIf="explorerLoading" class="loading">⏳ Loading predictions...</div>
+
+      <div *ngIf="!explorerLoading && filteredPredictions.length === 0" class="no-data">
+        No predictions found
+      </div>
+
+      <div *ngIf="!explorerLoading && filteredPredictions.length > 0" class="predictions-list glass-panel">
+        <div 
+          *ngFor="let pred of filteredPredictions" 
+          class="prediction-card"
+          [class.selected]="selectedPrediction?.id === pred.id"
+          (click)="selectPrediction(pred)">
+          <div class="prediction-header">
+            <span class="emotion-badge" 
+              [style.backgroundColor]="getEmotionColor(pred.emotion)"
+              [style.color]="'white'">
+              {{ getEmotionEmoji(pred.emotion) }} {{ pred.emotion }}
+            </span>
+            <span class="confidence-badge" [class]="getConfidenceClass(pred.confidence)">
+              {{ (pred.confidence * 100 | number:'1.0-0') }}%
+            </span>
+          </div>
+          <div class="prediction-meta">
+            <small>{{ pred.user_email }}</small> • 
+            <small>{{ pred.created_at | date:'short' }}</small>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedPrediction" class="glass-panel curation-panel">
+        <div class="curation-header">
+          <div>
+            <h3>Supervised dataset curation</h3>
+            <div class="toolbar-subtitle">Listen to this user audio, choose the true emotion, then copy it into the training folders.</div>
+          </div>
+          <span class="report-pill" *ngIf="curatedDatasetStats">Curated total: {{ curatedDatasetStats.total }}</span>
+        </div>
+
+        <div class="curated-counts" *ngIf="curatedDatasetStats">
+          <span *ngFor="let emotion of emotions" [style.borderColor]="getEmotionColor(emotion)">
+            {{ emotion }}: {{ curatedDatasetStats.counts?.[emotion] || 0 }}
+          </span>
+        </div>
+
+        <div class="prediction-curation-grid">
+          <div>
+            <p><strong>Predicted:</strong> {{ selectedPrediction.emotion }} ({{ (selectedPrediction.confidence * 100 | number:'1.0-0') }}%)</p>
+            <p><strong>User:</strong> {{ selectedPrediction.user_email }}</p>
+            <p><strong>Date:</strong> {{ selectedPrediction.created_at | date:'short' }}</p>
+          </div>
+
+          <div class="report-audio-panel compact">
+            <button class="btn-primary" (click)="loadSelectedPredictionAudio()" [disabled]="selectedPredictionAudioLoading || !selectedPrediction.audio_id">
+              {{ selectedPredictionAudioLoading ? 'Loading audio...' : 'Play selected audio' }}
+            </button>
+
+            <div *ngIf="selectedPredictionAudioError" class="alert error" style="margin-top: 0.9rem;">
+              {{ selectedPredictionAudioError }}
+            </div>
+
+            <div *ngIf="selectedPredictionAudioUrl" class="report-audio-player" style="margin-top: 0.9rem;">
+              <div class="audio-controls">
+                <button class="play-btn" (click)="togglePlayPredictionAudio()" [attr.aria-pressed]="isPredictionAudioPlaying" aria-label="Play / Pause selected prediction audio">
+                  <span *ngIf="!isPredictionAudioPlaying">▶</span>
+                  <span *ngIf="isPredictionAudioPlaying">❚❚</span>
+                </button>
+                <div class="audio-meta">
+                  <div class="audio-name">Prediction #{{ selectedPrediction.id }}</div>
+                </div>
+              </div>
+              <audio id="prediction-audio" [src]="selectedPredictionAudioUrl" (play)="onPredictionAudioPlay()" (pause)="onPredictionAudioPause()" preload="none"></audio>
+            </div>
+          </div>
+        </div>
+
+        <div class="curation-actions">
+          <label>True emotion</label>
+          <select [(ngModel)]="curationEmotion" class="curation-select">
+            <option *ngFor="let emotion of emotions" [value]="emotion">
+              {{ getEmotionEmoji(emotion) }} {{ emotion }}
+            </option>
+          </select>
+          <button class="btn-primary" (click)="curateSelectedPrediction()" [disabled]="!selectedPrediction.audio_id || actionLoading">
+            {{ actionLoading ? 'Saving...' : 'Save to training folder' }}
+          </button>
+        </div>
+
+        <div class="toolbar-subtitle" *ngIf="curationResult">
+          Saved as <strong>{{ curationResult.emotion }}</strong> at <strong>{{ curationResult.relative_path }}</strong>.
+        </div>
+        <div class="alert error" *ngIf="curationError" style="margin-top: 0.9rem;">
+          {{ curationError }}
+        </div>
+      </div>
+    </section>
+
+    <!-- PERFORMANCE SECTION -->
+    <section *ngIf="activeSection === 'performance'" class="section">
+      <div *ngIf="performanceLoading" class="loading">⏳ Loading performance data...</div>
+
+      <div *ngIf="performanceData && !performanceLoading" class="performance-grid">
+        <!-- Model Metrics Panel -->
+        <div class="metrics-card glass-panel">
+          <h3>📈 Model Performance</h3>
+          <div class="metrics-row">
+            <div class="metric-item">
+              <div class="metric-label">Accuracy</div>
+              <div class="metric-value">{{ displayAccuracy }}%</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-label">Precision</div>
+              <div class="metric-value">{{ displayPrecision }}%</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-label">Recall</div>
+              <div class="metric-value">{{ displayRecall }}%</div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-label">F1 Score</div>
+              <div class="metric-value">{{ displayF1 }}%</div>
+            </div>
+          </div>
+
+          <div class="class-bars" *ngIf="metrics?.class_f1?.length">
+            <h4>Per-class F1</h4>
+            <div *ngFor="let c of metrics?.class_f1" class="class-row">
+              <div class="class-name">{{ c.emotion }}</div>
+              <div class="class-bar">
+                <span [style.width]="(c.f1 * 100) + '%'"> </span>
+              </div>
+              <div class="class-value">{{ (c.f1 * 100) | number:'1.0-0' }}%</div>
+            </div>
+          </div>
+        </div>
+        <div class="alert-card glass-panel">
+          <h3>⚠️ Low Confidence Predictions (< 60%)</h3>
+          <div class="alert-count">{{ performanceData?.count ?? 0 }} predictions</div>
+          
+          <div class="low-conf-list">
+            <div 
+              *ngFor="let pred of performanceData?.items | slice:0:10"
+              class="low-conf-item">
+              <span class="emoji">{{ getEmotionEmoji($any(pred)?.emotion ?? '') }}</span>
+              <div class="info">
+                <div class="emotion-name">{{ $any(pred)?.emotion ?? 'Unknown' }}</div>
+                <small>{{ $any(pred)?.user_email ?? 'N/A' }} • {{ $any(pred)?.created_at | date:'short' }}</small>
+              </div>
+              <span class="confidence red">{{ (($any(pred)?.confidence ?? 0) * 100 | number:'1.0-0') }}%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="recommendations glass-panel">
+          <h3>💡 Recommendations</h3>
+          <ul>
+            <li>✅ Review {{ performanceData.count }} low-confidence predictions for model improvement</li>
+            <li>✅ Consider retraining model with identified edge cases</li>
+            <li>✅ Add more training data for underrepresented emotions</li>
+            <li>✅ Audit microphone quality issues in recordings</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- REPORTS SECTION -->
+    <section *ngIf="activeSection === 'reports'" class="section reports-shell">
+      <div class="explorer-controls glass-panel reports-toolbar">
+        <div>
+          <h3>🚩 User Reports</h3>
+          <div class="toolbar-subtitle">Review incorrect vocal predictions, listen to the stored audio, and decide if the model needs correction.</div>
+        </div>
+
+        <div class="filter-group">
+          <label>Filter by Status</label>
+          <select [(ngModel)]="reportStatusFilter" (change)="filterReports()" class="filter-select">
+            <option value="all">All</option>
+            <option value="PENDING">Pending</option>
+            <option value="CONFIRMED">Confirmed</option>
+            <option value="REJECTED">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+      <div *ngIf="reportsLoading" class="loading">⏳ Loading reports...</div>
+
+      <div *ngIf="!reportsLoading && reports.length === 0" class="no-data">
+        No reports found
+      </div>
+
+      <div *ngIf="!reportsLoading && reports.length > 0" class="predictions-list glass-panel reports-list">
+        <div
+          *ngFor="let report of reports"
+          class="prediction-card report-card"
+          [class.selected]="selectedReport?.id === report.id"
+          (click)="selectReport(report)">
+          <div class="prediction-header report-topline">
+            <span class="emotion-badge" [style.backgroundColor]="getEmotionColor(report.prediction_emotion)" [style.color]="'white'">
+              {{ getEmotionEmoji(report.prediction_emotion) }} {{ report.prediction_emotion }}
+            </span>
+            <span class="confidence-badge" [class]="getConfidenceClass(report.prediction_confidence)">
+              {{ (report.prediction_confidence * 100 | number:'1.0-0') }}%
+            </span>
+          </div>
+          <div class="prediction-meta">
+            <small class="reporter-email">{{ report.reporter_email }}</small> •
+            <span class="report-status-badge" [class]="report.status.toLowerCase()" [class.curated]="report.learning_status === 'CURATED'" [class.learned]="report.learning_status === 'LEARNED'">
+              {{ report.learning_status === 'CURATED' ? 'Added to Dataset' : report.learning_status === 'LEARNED' ? 'Trained Single' : report.status }}
+            </span> •
+            <small class="report-date">{{ report.created_at | date:'short' }}</small>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="selectedReport" class="glass-panel report-detail">
+        <h3>Selected Report #{{ selectedReport.id }}</h3>
+        <p><strong>Reason:</strong> {{ selectedReport.reason }}</p>
+        <p><strong>Comment:</strong> {{ selectedReport.comment || 'No comment' }}</p>
+        <p><strong>Status:</strong> {{ selectedReport.status }}</p>
+        <p><strong>Original audio:</strong> {{ selectedReport.original_name || 'Unknown' }}</p>
+
+        <div class="report-audio-panel">
+          <div class="report-audio-meta">
+            <div>
+              <div class="audio-label">Reported vocal</div>
+              <div class="audio-hint">Load the stored audio to verify the report manually.</div>
+            </div>
+            <span class="report-pill" *ngIf="selectedReport.audio_id">Stored audio ready</span>
+          </div>
+
+          <div class="report-audio-status" *ngIf="selectedReportAudioLoading">
+            <span>⏳</span>
+            <span>Loading audio...</span>
+          </div>
+
+          <button class="btn-primary" (click)="loadSelectedReportAudio()" [disabled]="selectedReportAudioLoading || !selectedReport.audio_id">
+            {{ selectedReportAudioLoading ? 'Loading audio...' : '▶ Play reported audio' }}
+          </button>
+
+          <div *ngIf="selectedReportAudioError" class="alert error" style="margin-top: 0.9rem;">
+            {{ selectedReportAudioError }}
+          </div>
+
+          <div *ngIf="selectedReportAudioUrl" class="report-audio-player" style="margin-top: 0.9rem;">
+            <div class="audio-controls">
+              <button class="play-btn" (click)="togglePlayAudio()" [attr.aria-pressed]="isAudioPlaying" aria-label="Play / Pause reported audio">
+                <span class="play-icon" *ngIf="!isAudioPlaying">▶</span>
+                <span class="pause-icon" *ngIf="isAudioPlaying">❚❚</span>
+                <span class="eq" [class.active]="isAudioPlaying" aria-hidden="true">
+                  <i></i><i></i><i></i><i></i>
+                </span>
+              </button>
+              <div class="audio-meta">
+                <div class="audio-name">{{ selectedReport.original_name || 'Recorded audio' }}</div>
+                <div class="audio-actions">
+                  <a [href]="selectedReportAudioUrl" download="reported-audio-{{selectedReport.id}}" class="btn-secondary small">Download</a>
+                </div>
+              </div>
+            </div>
+            <audio id="report-audio" [src]="selectedReportAudioUrl" (play)="onAudioPlay()" (pause)="onAudioPause()" preload="none"></audio>
+          </div>
+        </div>
+
+        <div class="report-note">
+          <label>Admin review note</label>
+          <textarea [(ngModel)]="reportReview.admin_review_note" class="form-input" rows="3" placeholder="Optional note for the user"></textarea>
+        </div>
+
+        <div class="report-note">
+          <label>Supervised correction / Apprentissage supervise</label>
+          <div class="toolbar-subtitle">
+            The model predicted <strong>{{ selectedReport.prediction_emotion }}</strong>. Choose the true emotion after listening to the audio, then teach the model from this verified label.
+          </div>
+          <select [(ngModel)]="correctedEmotion" class="form-select">
+            <option *ngFor="let emotion of emotions" [value]="emotion">
+              {{ getEmotionEmoji(emotion) }} {{ emotion }}
+            </option>
+          </select>
+          <div class="toolbar-subtitle" *ngIf="selectedReport.learning_status">
+            Learning status: <strong>{{ selectedReport.learning_status }}</strong>
+            <span *ngIf="selectedReport.corrected_emotion"> - Correct label: {{ selectedReport.corrected_emotion }}</span>
+          </div>
+          <div class="toolbar-subtitle" *ngIf="learningResult">
+            Loss before: {{ learningResult.loss_before | number:'1.4-4' }} -
+            loss after: {{ learningResult.loss_after | number:'1.4-4' }}
+            <span *ngIf="learningResult.prediction_after"> - After teaching: {{ learningResult.prediction_after }}</span>
+          </div>
+          <div class="toolbar-subtitle" *ngIf="curationResult">
+            Curated dataset copy: <strong>{{ curationResult.relative_path }}</strong>
+          </div>
+          <div class="alert error" *ngIf="learningError" style="margin-top: 0.9rem;">
+            {{ learningError }}
+          </div>
+        </div>
+
+        <div class="report-actions">
+          <button class="btn-primary" (click)="reviewReport('CONFIRMED')" [disabled]="actionLoading" aria-label="Mark as confirmed">Mark fault</button>
+          <button class="btn-secondary" (click)="reviewReport('REJECTED')" [disabled]="actionLoading" aria-label="Reject report">Reject</button>
+          <button class="btn-primary" (click)="retestReport()" [disabled]="!selectedReport.audio_id || actionLoading" aria-label="Re-test model">Re-test model</button>
+          <button class="btn-primary" (click)="learnFromReport()" [disabled]="!selectedReport.audio_id || actionLoading" aria-label="Teach model with corrected label">
+            {{ actionLoading ? 'Training...' : selectedReport.learning_status === 'LEARNED' ? 'Re-teach model' : 'Teach model' }}
+          </button>
+          <button class="btn-secondary" (click)="curateSelectedReport()" [disabled]="!selectedReport.audio_id || actionLoading" aria-label="Save audio to supervised dataset">
+            Save to training folder
+          </button>
+        </div>
+
+        <!-- Confirmation modal for critical actions -->
+        <div class="modal-backdrop" *ngIf="showConfirmModal" (click)="showConfirmModal = false"></div>
+        <div class="modal-container glass-panel" *ngIf="showConfirmModal">
+          <div class="modal-header">
+            <h3>Confirm action</h3>
+            <button class="btn-close" (click)="showConfirmModal = false">×</button>
+          </div>
+          <div class="modal-body">
+            <p *ngIf="confirmAction.type === 'REVIEW'">Are you sure you want to mark this report as <strong>{{ confirmAction.payload?.status }}</strong>?</p>
+            <p *ngIf="confirmAction.type === 'RETEST'">Run the model again on the stored audio? This will create a new prediction result.</p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-secondary" (click)="showConfirmModal = false">Cancel</button>
+            <button class="btn-primary" *ngIf="confirmAction.type === 'REVIEW'" (click)="confirmReviewAction()" [disabled]="actionLoading">Confirm</button>
+            <button class="btn-primary" *ngIf="confirmAction.type === 'RETEST'" (click)="confirmRetest()" [disabled]="actionLoading">Run Retest</button>
+          </div>
+        </div>
+
+        <div *ngIf="retestResult" class="glass-panel" style="margin-top: 1rem; padding: 1rem;">
+          <h4>Retest result</h4>
+          <p><strong>Emotion:</strong> {{ retestResult.result?.emotion }}</p>
+          <p><strong>Confidence:</strong> {{ (retestResult.result?.confidence * 100 | number:'1.0-0') }}%</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- USERS SECTION -->
+    <section *ngIf="activeSection === 'users'" class="section">
+      <div *ngIf="usersLoading" class="loading">⏳ Loading user data...</div>
+
+      <div *ngIf="!usersLoading && usersStats.length > 0" class="users-grid glass-panel">
+        <div class="users-header">
+          <h3>👥 User Management</h3>
+          <button class="btn-primary btn-sm" (click)="openAddUserModal()">+ Add User</button>
+        </div>
+        
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Predictions</th>
+              <th>Joined</th>
+              <th>Last Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of usersStats">
+              <td>{{ user.email }}</td>
+              <td><span class="badge-role" [class.admin]="user.role === 'ADMIN'">{{ user.role }}</span></td>
+              <td><span class="badge-status" [class.active]="user.is_active">{{ user.is_active ? 'Active' : 'Inactive' }}</span></td>
+              <td><span class="badge">{{ user.prediction_count }}</span></td>
+              <td>{{ user.created_at | date:'short' }}</td>
+              <td>{{ user.last_prediction ? (user.last_prediction | date:'short') : 'Never' }}</td>
+              <td class="actions-cell">
+                <button class="btn-icon edit" (click)="openEditUserModal(user)" title="Edit">✏️</button>
+                <button class="btn-icon delete" (click)="deleteUser(user.id)" title="Delete">🗑️</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- USER MODAL -->
+    <div class="modal-backdrop" *ngIf="showUserModal" (click)="closeUserModal()"></div>
+    <div class="modal-container glass-panel" *ngIf="showUserModal">
+      <div class="modal-header">
+        <h3>{{ editingUserId ? 'Edit User' : 'Add New User' }}</h3>
+        <button class="btn-close" (click)="closeUserModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" [(ngModel)]="userForm.email" class="form-input" placeholder="user@example.com">
+        </div>
+        <div class="form-group">
+          <label>Password <small>{{ editingUserId ? '(leave blank to keep current)' : '' }}</small></label>
+          <input type="password" [(ngModel)]="userForm.password" class="form-input" placeholder="********">
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <select [(ngModel)]="userForm.role" class="form-select">
+            <option value="USER">USER</option>
+            <option value="ADMIN">ADMIN</option>
+          </select>
+        </div>
+        <div class="form-group checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="userForm.is_active">
+            <span>Account is Active</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeUserModal()">Cancel</button>
+        <button class="btn-primary" (click)="saveUser()">Save User</button>
+      </div>
+    </div>
+
+    <!-- BATCH SECTION -->
+    <section *ngIf="activeSection === 'batch'" class="section">
+      <div class="batch-card glass-panel training-card">
+        <div class="training-header">
+          <div>
+            <h3>Model Training Control Room</h3>
+            <p>Retrain the emotion CNN model using the new admin-approved audio samples curated from user reports.</p>
+          </div>
+          <span class="training-status-badge animate-pulse" [class.running]="trainingStatus?.running" [class.failed]="trainingStatus?.status === 'FAILED'" [class.success]="trainingStatus?.status === 'COMPLETED'">
+            {{ trainingStatus?.running ? '⚡ TRAINING RUNNING' : trainingStatus?.status || 'IDLE' }}
+          </span>
+        </div>
+
+        <!-- Curated Dataset Dashboard -->
+        <div class="curated-counts-container" *ngIf="curatedDatasetStats">
+          <h4>📁 Curated Fine-Training Dataset Status</h4>
+          <div class="curated-counts-grid">
+            <div class="curated-count-card" *ngFor="let emotion of emotions" [style.borderLeftColor]="getEmotionColor(emotion)">
+              <span class="emoji">{{ getEmotionEmoji(emotion) }}</span>
+              <div class="details">
+                <span class="emotion-name">{{ emotion }}</span>
+                <span class="count-val">{{ curatedDatasetStats.counts?.[emotion] || 0 }} files</span>
+              </div>
+            </div>
+          </div>
+          <div class="total-stats-bar">
+            <span>Total Curated Samples: <strong>{{ curatedDatasetStats.total || 0 }}</strong></span>
+            <span class="hint">* A minimum of 5-10 samples per emotion is recommended for balanced fine-tuning</span>
+          </div>
+        </div>
+
+        <div class="training-actions">
+          <button class="btn-primary btn-start-train" (click)="startTraining()" [disabled]="trainingLoading || trainingStatus?.running">
+            <span class="btn-content">
+              <span *ngIf="trainingStatus?.running" class="spinner-inline"></span>
+              {{ trainingStatus?.running ? 'Training in Progress...' : trainingLoading ? 'Starting...' : '🚀 Start Fine-Training Model' }}
+            </span>
+          </button>
+          <button class="btn-secondary" (click)="loadTrainingStatus()" [disabled]="trainingLoading">
+            🔄 Refresh Status
+          </button>
+        </div>
+
+        <!-- Timeline Steps Progress -->
+        <div class="training-timeline-panel glass-panel" *ngIf="trainingStatus?.running || trainingStep !== 'idle'">
+          <h4>🛠️ Training Pipeline Status</h4>
+          <div class="timeline-steps">
+            <!-- Step 1: Prep -->
+            <div class="timeline-step" [class.active]="trainingStep === 'preparing'" [class.completed]="trainingStep !== 'idle' && trainingStep !== 'preparing' && trainingStep !== 'failed'" [class.failed]="trainingStep === 'failed' && parsedEpochs.length === 0">
+              <div class="step-circle">
+                <span *ngIf="trainingStep === 'preparing'" class="spinner-inline no-margin"></span>
+                <span *ngIf="trainingStep !== 'preparing' && trainingStep !== 'idle' && (trainingStep !== 'failed' || parsedEpochs.length > 0)">✓</span>
+                <span *ngIf="trainingStep === 'idle'">1</span>
+                <span *ngIf="trainingStep === 'failed' && parsedEpochs.length === 0">✗</span>
+              </div>
+              <div class="step-info">
+                <div class="step-title">1. Feature Extraction</div>
+                <div class="step-desc">Convert audio to MFCC arrays</div>
+              </div>
+            </div>
+
+            <!-- Step 2: Train -->
+            <div class="timeline-step" [class.active]="trainingStep === 'training'" [class.completed]="trainingStep === 'reloading' || trainingStep === 'completed'" [class.failed]="trainingStep === 'failed' && parsedEpochs.length > 0">
+              <div class="step-circle">
+                <span *ngIf="trainingStep === 'training'" class="spinner-inline no-margin"></span>
+                <span *ngIf="trainingStep === 'reloading' || trainingStep === 'completed'">✓</span>
+                <span *ngIf="trainingStep !== 'training' && trainingStep !== 'reloading' && trainingStep !== 'completed'">2</span>
+              </div>
+              <div class="step-info">
+                <div class="step-title">2. CNN Training</div>
+                <div class="step-desc">Epochs: {{ currentEpoch }}/{{ maxEpochs }}</div>
+              </div>
+            </div>
+
+            <!-- Step 3: Reload -->
+            <div class="timeline-step" [class.active]="trainingStep === 'reloading'" [class.completed]="trainingStep === 'completed'" [class.failed]="trainingStep === 'failed' && parsedEpochs.length === maxEpochs">
+              <div class="step-circle">
+                <span *ngIf="trainingStep === 'reloading'" class="spinner-inline no-margin"></span>
+                <span *ngIf="trainingStep === 'completed'">✓</span>
+                <span *ngIf="trainingStep !== 'reloading' && trainingStep !== 'completed'">3</span>
+              </div>
+              <div class="step-info">
+                <div class="step-title">3. Model Hot-Reload</div>
+                <div class="step-desc">Deploying weights to inference backend</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-time Metrics Dashboard -->
+        <div class="live-metrics-grid" *ngIf="parsedEpochs.length > 0">
+          <div class="live-metric-card glass-panel border-epoch">
+            <span class="lbl">Epoch Progress</span>
+            <span class="val">{{ currentEpoch }} / {{ maxEpochs }}</span>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" [style.width.%]="(currentEpoch / maxEpochs) * 100"></div>
+            </div>
+          </div>
+          <div class="live-metric-card glass-panel border-loss">
+            <span class="lbl">Train / Val Loss</span>
+            <span class="val text-orange">{{ currentLoss | number:'1.4-4' }} <small class="lbl-dim">/ {{ currentValLoss | number:'1.4-4' }}</small></span>
+          </div>
+          <div class="live-metric-card glass-panel border-acc">
+            <span class="lbl">Train Accuracy</span>
+            <span class="val text-blue">{{ (currentAcc * 100) | number:'1.2-2' }}%</span>
+          </div>
+          <div class="live-metric-card glass-panel border-val-acc">
+            <span class="lbl">Validation Accuracy</span>
+            <span class="val text-green">{{ (currentValAcc * 100) | number:'1.2-2' }}%</span>
+          </div>
+        </div>
+
+        <!-- Success celebration card -->
+        <div class="training-success-card glass-panel" *ngIf="trainingStep === 'completed'">
+          <div class="success-header">
+            <span class="trophy-emoji">🏆</span>
+            <div>
+              <h4>Model Successfully Retrained!</h4>
+              <p>The feedback model weights have been fine-tuned and reloaded successfully. The system will use the updated model for all subsequent predictions.</p>
+            </div>
+          </div>
+          <div class="success-stats-grid">
+            <div class="stat-box">
+              <span class="stat-label">Total Epochs</span>
+              <span class="stat-val">{{ currentEpoch }}</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Best Val Accuracy</span>
+              <span class="stat-val text-green">{{ (currentValAcc * 100) | number:'1.2-2' }}%</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-label">Final Val Loss</span>
+              <span class="stat-val text-orange">{{ currentValLoss | number:'1.4-4' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="training-meta-grid" *ngIf="trainingStatus">
+          <div class="meta-box">
+            <span>Started At</span>
+            <strong>{{ trainingStatus.started_at ? (trainingStatus.started_at | date:'medium') : 'Not started' }}</strong>
+          </div>
+          <div class="meta-box">
+            <span>Finished At</span>
+            <strong>{{ trainingStatus.finished_at ? (trainingStatus.finished_at | date:'medium') : 'Not finished' }}</strong>
+          </div>
+          <div class="meta-box">
+            <span>Exit Code</span>
+            <strong [class.success-text]="trainingStatus.return_code === 0" [class.fail-text]="trainingStatus.return_code > 0">
+              {{ trainingStatus.return_code === null || trainingStatus.return_code === undefined ? '-' : trainingStatus.return_code }}
+            </strong>
+          </div>
+          <div class="meta-box meta-box--wide">
+            <span>Log File Location</span>
+            <strong>{{ trainingStatus.log_path || '-' }}</strong>
+          </div>
+        </div>
+
+        <div class="alert error" *ngIf="trainingError">
+          ⚠️ {{ trainingError }}
+        </div>
+
+        <!-- Visual Curves / Chart Block -->
+        <div class="training-curves-container" *ngIf="trainingStatus?.log_tail">
+          <div class="tr-dashboard glass-panel">
+            <div class="tr-grid">
+              <!-- Main Area Chart -->
+              <div class="tr-card tr-main-card">
+                <div class="tr-card-header">
+                  <span class="tr-card-title">Accuracy & Loss Curves</span>
+                  <div class="tr-legend">
+                    <span class="tr-legend-item"><span class="tr-dot blue"></span> Train Acc</span>
+                    <span class="tr-legend-item"><span class="tr-dot blue dashed"></span> Val Acc</span>
+                    <span class="tr-legend-item"><span class="tr-dot orange"></span> Train Loss</span>
+                    <span class="tr-legend-item"><span class="tr-dot orange dashed"></span> Val Loss</span>
+                  </div>
+                </div>
+                <div class="tr-main-chart">
+                  <svg viewBox="0 0 800 350" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="gradBlue" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.4"/>
+                        <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.02"/>
+                      </linearGradient>
+                      <linearGradient id="gradOrange" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#f97316" stop-opacity="0.3"/>
+                        <stop offset="100%" stop-color="#f97316" stop-opacity="0.02"/>
+                      </linearGradient>
+                    </defs>
+                    
+                    <!-- Grid Lines -->
+                    <line x1="40" y1="30" x2="780" y2="30" stroke="rgba(255,255,255,0.05)" />
+                    <line x1="40" y1="150" x2="780" y2="150" stroke="rgba(255,255,255,0.05)" />
+                    <line x1="40" y1="270" x2="780" y2="270" stroke="rgba(255,255,255,0.15)" stroke-width="1.5" />
+
+                    <!-- Real Data Paths if available, else Mockup Fallbacks -->
+                    <g *ngIf="realAccAreaPath; else fallbackPaths">
+                      <!-- Loss Train Area -->
+                      <path [attr.d]="realLossAreaPath" fill="url(#gradOrange)" />
+                      <!-- Accuracy Train Area -->
+                      <path [attr.d]="realAccAreaPath" fill="url(#gradBlue)" />
+                      
+                      <!-- Curves -->
+                      <path [attr.d]="realLossPath" fill="none" stroke="#f97316" stroke-width="3" />
+                      <path [attr.d]="realValLossPath" fill="none" stroke="#f97316" stroke-width="2" stroke-dasharray="4" />
+                      
+                      <path [attr.d]="realAccPath" fill="none" stroke="#3b82f6" stroke-width="3" />
+                      <path [attr.d]="realValAccPath" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4" />
+                    </g>
+                    
+                    <ng-template #fallbackPaths>
+                      <g opacity="0.2">
+                        <path d="M40 270 Q 150 50, 250 100 T 450 60 T 600 200 T 700 80 L 780 150 L 780 270 Z" fill="url(#gradOrange)" />
+                        <path d="M40 270 Q 150 200, 250 150 T 450 250 T 600 100 T 700 220 L 780 100 L 780 270 Z" fill="url(#gradBlue)" />
+                      </g>
+                    </ng-template>
+
+                    <!-- X Axis Labels -->
+                    <text x="40" y="295" fill="#6b7280" font-size="10">Epoch 1</text>
+                    <text x="225" y="295" fill="#6b7280" font-size="10">Epoch 25</text>
+                    <text x="410" y="295" fill="#6b7280" font-size="10">Epoch 50</text>
+                    <text x="595" y="295" fill="#6b7280" font-size="10">Epoch 75</text>
+                    <text x="740" y="295" fill="#6b7280" font-size="10">Epoch 100</text>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Top Right Bar Chart (Processed Samples status) -->
+              <div class="tr-card tr-side-card">
+                <div class="tr-card-header">
+                  <span class="tr-card-title">Training Data Size</span>
+                </div>
+                <div class="tr-big-number orange-text">{{ curatedDatasetStats ? curatedDatasetStats.total : '0' }}</div>
+                <div class="tr-sub-label">curated samples fine-tuning pool</div>
+                <div class="tr-bar-container">
+                  <div class="tr-bar-col"><div class="tr-bar" [style.height.%]="20"></div><span class="tr-label">Ntr</span></div>
+                  <div class="tr-bar-col"><div class="tr-bar" [style.height.%]="40"></div><span class="tr-label">Clm</span></div>
+                  <div class="tr-bar-col"><div class="tr-bar" [style.height.%]="50"></div><span class="tr-label">Hpy</span></div>
+                  <div class="tr-bar-col"><div class="tr-bar" [style.height.%]="30"></div><span class="tr-label">Sad</span></div>
+                  <div class="tr-bar-col"><div class="tr-bar" [style.height.%]="80"></div><span class="tr-label">Ang</span></div>
+                  <div class="tr-bar-col"><div class="tr-bar" [style.height.%]="45"></div><span class="tr-label">Fer</span></div>
+                  <div class="tr-bar-col"><div class="tr-bar" [style.height.%]="60"></div><span class="tr-label">Dsg</span></div>
+                  <div class="tr-bar-col"><div class="tr-bar" [style.height.%]="35"></div><span class="tr-label">Srp</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACTUAL LOG (Interactive Monospace Console) -->
+          <div class="training-log" *ngIf="trainingStatus?.log_tail">
+            <div class="training-log-header">
+              <span>🖥️ System Terminal Output</span>
+              <button class="btn-console-toggle" (click)="toggleTrainingLog()">
+                {{ showTrainingLog ? '▼ Collapse Console' : '▶ Expand Console' }}
+              </button>
+            </div>
+            <pre [style.display]="showTrainingLog ? 'block' : 'none'">{{ trainingStatus.log_tail }}</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Toast notification -->
+  <div class="app-toast" [class.visible]="toastVisible" *ngIf="toastMessage">
+    <div class="toast-content">
+      <span *ngIf="actionLoading" class="spinner-inline" aria-hidden="true"></span>
+      <span>{{ toastMessage }}</span>
+    </div>
+  </div>
+</div>

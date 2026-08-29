@@ -1,0 +1,57 @@
+Line 116: Length 4462
+Created At: 2026-06-13T00:37:53Z
+Completed At: 2026-06-13T00:37:53Z
+File Path: `file:///c:/Users/marie/Desktop/Projets/PFE%20Issat/frontend/src/app/ser/ser.component.html`
+Total Lines: 351
+Total Bytes: 14673
+Showing lines 1 to 351
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1: <div class="app-container">
+2:   <header class="glass-panel text-center pulse-glow">
+3:     <h1>🎙️ SER AI Studio</h1>
+4:     <p>Reconnaissance d'Emotions Vocales par CNN-5 Profond — 8 Émotions (97.12%)</p>
+5:   </header>
+6: 
+7:   <main class="main-content">
+8:     <div class="tabs-container">
+9:       <div class="tabs-header">
+10:         <button class="tab-btn" [class.active]="activeTab === 'upload'" (click)="setActiveTab('upload')">
+11:           📁 Upload Audio
+12:         </button>
+13:         <button cl
+
+Line 175: Length 4460
+Created At: 2026-06-13T00:54:53Z
+Completed At: 2026-06-13T00:54:53Z
+File Path: `file:///c:/Users/marie/Desktop/Projets/PFE%20Issat/frontend/src/app/ser/ser.component.html`
+Total Lines: 230
+Total Bytes: 9545
+Showing lines 1 to 230
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+1:           <h2>🎭 Exemples RAVDESS</h2>
+2:         </div>
+3: 
+4:         <div class="examples-grid">
+5:           <button *ngFor="let ex of examples"
+6:                   class="example-btn"
+7:                   [class.active]="selectedExample?.id === ex.id"
+8:                   (click)="selectExample(ex)">
+9:             <span class="emoji">{{ ex.emoji }}</span>
+10:             <span class="name">{{ ex.emotion }}</span>
+11:           </button>
+12:         </div>
+13: 
+14:         <div class="audio-player" *ng
+
+Line 178: Length 3836
+
+
+Line 181: Length 2936
+
+
+Line 187: Length 3425
+
+
+Line 197: Length 2123
+
+

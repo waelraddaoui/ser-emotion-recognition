@@ -1,0 +1,92 @@
+.shell {
+  min-height: 100vh;
+}
+
+.topbar {
+  margin: 1.5rem auto 0;
+  width: min(1200px, 92vw);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  gap: 1rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.brand .logo {
+  font-size: 1.6rem;
+}
+
+.brand strong {
+  display: block;
+}
+
+.brand small {
+  color: var(--text-muted);
+}
+
+.links {
+  display: flex;
+  gap: 1rem;
+}
+
+.links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 0.2rem;
+}
+
+.links a.active,
+.links a:hover {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.user {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-main);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.chip.danger {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+main {
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 800px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .links {
+    flex-wrap: wrap;
+  }
+}

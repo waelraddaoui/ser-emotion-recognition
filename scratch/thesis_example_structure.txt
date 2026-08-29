@@ -1,0 +1,1097 @@
+Résumé
+Ce travail s’inscrit dans le domaine du diagnostic médical assisté par intelligence artificielle. Il propose une approche de classification automatique du cancer du sein à partir d’images histopathologiques, en s’appuyant sur des techniques d’apprentissage profond. Une architecture personnalisée de réseau de neurones convolutifs (CNN) a été développée et comparée à d'autres modèles issus du transfert d’apprentissage. Le processus méthodologique inclut la préparation des données, la conception des modèles, l’entraînement supervisé et l’évaluation des performances, dans le but de contribuer à l’amélioration de la détection automatisée des anomalies dans les images médicales.
+Abstract
+This work falls within the field of AI-assisted medical diagnosis. It presents an approach for the automatic classification of breast cancer from histopathological images, using deep learning techniques. A custom Convolutional Neural Network (CNN) was developed and compared to other models based on transfer learning. The methodological process includes data preprocessing, model design, supervised training, and performance evaluation, with the aim of enhancing the automated detection of anomalies in medical imaging.
+Remerciements
+"At times our own light goes out and is rekindled by a spark from another person. Each of us has cause to think with deep gratitude of those who have relit the flame within us."
+À l’issue de ce parcours, je ressens le besoin profond d’exprimer ma gratitude à celles et ceux qui ont été ma lumière dans les moments sombres, ma force dans les instants de doute, et mon refuge dans les tempêtes.
+Je tiens tout d’abord à remercier du fond du cœur ma famille, qui m’a entourée d’un amour inconditionnel et d’un soutien indéfectible. Merci à mes parents pour les sacrifices silencieux, les encouragements constants et les valeurs qu’ils m’ont transmis : la patience, la dignité, le respect et la persévérance. Leur confiance en moi a été la boussole qui m’a guidée à travers chaque étape de ce projet.
+Je remercie aussi chaleureusement M. Wajdi Bellil, mon encadrant, pour sa disponibilité, sa confiance et ses conseils tout au long de ce projet. Son accompagnement rigoureux et humain a grandement contribué à la qualité de ce mémoire.
+À mes amis proches, qui ont su m’écouter, m’encourager, me faire rire parfois quand je pensais ne plus en être capable votre bienveillance et votre énergie ont été essentielles. Vous avez su être cette étincelle qui rallume la flamme.
+Je n’oublie pas non plus toutes les personnes, croisées sur ce chemin, qui m’ont offert un regard bienveillant, un mot juste ou une aide inattendue. Leur générosité a laissé une empreinte durable.
+Enfin, je tiens à me remercier moi-même. Pour n’avoir pas abandonné. Pour avoir continué à croire, même quand c’était difficile. Pour chaque pas accompli avec détermination, chaque page écrite avec passion. Ce mémoire est l’aboutissement d’un engagement personnel et d’une volonté sereine de réussir.
+À tous, merci infiniment.
+Table des matières
+Listes des figures8
+Listes des tableaux10
+Introduction1
+1. Contexte et motivation1
+2. Problématique1
+3. Objectifs du projet2
+4. Structure du rapport3
+Chapitre 1. Notions médicales et approches de classification4
+Introduction4
+1.1. Le cancer du sein et les modalités d’imagerie4
+1.1.1 Diagnostic du cancer du sein :4
+1.1.2 Techniques d’imagerie utilisées dans le diagnostic mammaire5
+1.1.2.1 Mammographie5
+1.1.2.2 IRM mammaire6
+1.1.2.3 Échographie mammaire7
+1.1.2.4 Imagerie histopathologique8
+1.1.3 Comparaison des modalités d’imagerie mammaire8
+1.2 Principes de la classification d’images médicales9
+1.2.1 Enjeux et définition de la classification d’images mammaires9
+1.2.2 Types de classification10
+1.2.2.1 La classification binaire10
+1.2.2.2 La classification multi-classes10
+1.2.2.3  La classification multilabel11
+1.3 Méthodes traditionnelles de classification11
+1.3.1  Les arbres de décision12
+1.3.2  L’algorithme des k plus proches voisins (KNN)13
+1.3.3 Support Vector Machines (SVM)13
+1.4  Méthodes de classification intelligentes14
+1.4.1  Artificial Neural Networks (ANN)15
+1.4.2 Deep Neural Networks (DNN)16
+1.4.3  Convolutional Neural Networks (CNN)17
+Conclusion19
+Chapitre 2. Revue de la littérature20
+Introduction20
+2.1 Méthodologie de recherche20
+2.2 Travaux connexes21
+2.3 Jeux de données disponibles et leurs limites29
+Conclusion32
+Chapitre 3. Méthodologie33
+Introduction33
+3.1 Vue globale de l’architecture proposée33
+3.2 Collecte et prétraitement des données35
+3.2.1 Collecte des données35
+3.2.2 Étapes de prétraitement35
+a) Chargement et organisation des données35
+b) Nettoyage des données et gestion des valeurs manquantes36
+c) Répartition des données36
+d) Redimensionnement et normalisation37
+e) Augmentation des données37
+3.3 Conception des modèles38
+3.3.1 Modèles d’apprentissage automatique38
+a) Modèle CNN personnalisée38
+b) Modèle BLSTM (Bidirectional LSTM)41
+3.3.2 Modèles par transfert de connaissances42
+A. Modèle VGG1942
+B. Modèle ResNet50V243
+C. DenseNet121 & EfficientNetB045
+3.4 Stratégie d’évaluation45
+Conclusion46
+Chapitre 4. Expérimentations et résultats47
+Introduction47
+4.1 Implémentation technique47
+4.1.1 Environnement matériel et logiciel47
+4.1.1.1 Environnement matériel47
+4.1.1.2 Environnement logiciel48
+4.2 Évaluation des performances51
+4.2.1 Les concepts essentiels pour comprendre la performance des modèles51
+a) Accuracy (Exactitude) :51
+b) F1-Score :52
+c) Recall (Sensibilité) :52
+d) Précision (Precision) :52
+e) Matrice de confusion :52
+4.2.2 Métriques d’évaluation53
+4.3 Résultats obtenus54
+4.3.1 Réseau de Neurones Convolutif CNN54
+4.3.2 DenseNet12157
+4.3.3 ResNet50V258
+4.3.4 VGG1959
+4.3.5 EfficientNetB060
+4.3.6 BiLSTM61
+4.4 Analyse des résultats et discussion62
+4.4.1 Comparaison des modèles implémentés62
+4.4.2 Interprétation des performances64
+4.4.3 Analyse des erreurs65
+4.4.4 Impact des choix méthodologiques65
+4.5 Limites du projet66
+4.6 Discussion67
+4.7 Déploiement du modèle68
+Conclusion70
+Conclusion générale71
+Bibliographie72
+Listes des figures
+Figure 1 : mammography [3]6
+Figure 2 : breast MRI [5]7
+Figure 3  : breast Ultrasound [6]7
+Figure 4  : Carcinome canalaire infiltrant (coloration H et E) [8]8
+Figure 5 : Classification Binaire vs Classification Multi-classes11
+Figure 6  : Exemple D’arbre de décision12
+Figure 7 : SVM [11]14
+Figure 8  : IA appliquée aux mammographies [12]15
+Figure 9  : Architecture de  ANN [13]16
+Figure 10 : Convolutional Neural Network architecture [15]18
+Figure 11 : schéma de l’architecture globale34
+Figure 12 : Nettoyage des données et gestion des valeurs manquantes36
+Figure 13 : Répartition des données37
+Figure 14  :  Normalisation et Augmentation des données38
+Figure 15 : Official logo of the Python programming language [26]48
+Figure 16 : Anaconda Logo48
+Figure 17  : Jupyter Notebook Logo49
+Figure 18 :  kaggle logo49
+Figure 19 : Scikit-learn Logo50
+Figure 20  : Tensorflow et Keras logo50
+Figure 21 : Seaborn et Matplotlib Logo51
+Figure 22 : Évaluation directe du modèle avec model.evaluate53
+Figure 23  : Code Python utilisé pour l’évaluation avancée et la visualisation des performances du modèle54
+Figure 24  : Matrice de Confusion du CNN55
+Figure 25 : Courbe de précision et de perte d'entraînement/validation56
+Figure 26 : Image test prédite comme bénigne56
+Figure 27 : Matrice de confusion du modèle DenseNet12158
+Figure 28  : Matrice de confusion ResNet50V259
+Figure 29 : Matrice de confusion VGG1960
+Figure 30  : Matrice de confusion EfficientNetB061
+Figure 31  : Matrice de confusion du modèle BiLSTM62
+Figure 32  : Performance des modèles entraines63
+Figure 33  : Comparaison des modèles selon la métrique Log Loss64
+Figure 34 : Page d’accueil de la plateforme BCancer.AI69
+Figure 35 : Résultat de diagnostic automatique sur une image testée69
+Listes des tableaux
+Table 1 : Différences entre les types d’images médicales9
+Table 2 : Synthèse des modèles d’IA pour le diagnostic du cancer du sein28
+Table 3 : Tableau comparatif des bases de données pour le diagnostic du cancer du sein30
+Table 4  : Structure détaillée du modèle CNN personnalisé utilisé dans cette étude39
+Table 5 : Matrice de confusion53
+Table 6 : Résultats de performance du modèle CNN55
+Table 7 : Résultats de performance du modèle DenseNet12157
+Table 8 : Résultats de performance du modèle ResNet50V258
+Table 9 : Résultats de performance du modèle VGG1959
+Table 10 : Résultats de performance du modèle EfficientNetB061
+Table 11 : Résultats de performance du modèle BiLSTM62
+Table 12 : Résumé comparatif des performances des modèles entraînés63
+Introduction 
+ Contexte et motivation 
+L’intelligence artificielle (IA) a connu ces dernières années une progression spectaculaire, avec des applications variées dans de nombreux domaines, dont celui de la santé. Le deep learning, branche avancée de l’IA, a particulièrement transformé l’analyse des images médicales, en permettant l’extraction automatique de motifs complexes à partir de volumes importants de données visuelles, avec une rapidité et une précision remarquable.Le cancer du sein, première cause de mortalité par cancer chez la femme à l’échelle mondiale, constitue un terrain d’application prioritaire pour ces approches. Selon l’Organisation mondiale de la santé, plus de 2,3 millions de nouveaux cas ont été recensés en 2023. En Tunisie, environ 3 000 cas sont enregistrés chaque année, souvent à des stades avancés, ce qui réduit considérablement les chances de guérison.Dans ce contexte, le recours à des outils d’analyse automatisée devient crucial pour améliorer la détection précoce, optimiser le tri des cas suspects et alléger la charge des professionnels de santé. L’IA offre une opportunité réelle de renforcer la qualité et la réactivité du diagnostic médical. 
+Problématique
+Dans le flux croissant des données de santé, les professionnels sont confrontés à une quantité toujours plus importante d’images médicales à analyser. Identifier des anomalies parfois discrètes, dans des contextes cliniques complexes, représente un exercice exigeant où l’erreur peut avoir de lourdes conséquences. Même les experts les plus aguerris peuvent être confrontés à des incertitudes ou à des divergences d’interprétation, en raison de la finesse des détails à examiner et de la charge cognitive importante.
+Classer correctement une image selon la présence ou l’absence d’un cancer ne relève pas uniquement d’une tâche technique ; c’est un acte à la fois sensible et déterminant dans le parcours de soins. Or, la pression exercée par le volume de données, associée au manque de ressources humaines spécialisées, rend nécessaire le recours à des solutions d’assistance automatisée.
+C’est dans cette perspective que s’inscrit ce projet : proposer une approche basée sur l’intelligence artificielle pour améliorer la détection et la classification des anomalies dans les images médicales, tout en garantissant fiabilité, cohérence et rapidité dans un contexte où chaque décision compte.
+Objectifs du projet 
+L’objectif de ce travail est de concevoir une solution fondée sur l’intelligence artificielle, capable d’assister les professionnels de santé dans la détection automatisée du cancer du sein à partir d’images médicales. Il s’agit plus précisément de mettre en place un modèle de classification binaire permettant d’indiquer, de manière rapide et fiable, si une image donnée révèle la présence d’un cancer ou non.
+À travers ce projet, nous visons à :
+Développer une architecture d’apprentissage profond adaptée au contexte médical.
+Explorer l’apport du transfert d’apprentissage pour améliorer la qualité des prédictions.
+Évaluer la robustesse et la précision du modèle à l’aide de métriques standard.
+Réduire la charge cognitive des praticiens, notamment dans les environnements à ressources limitées.
+Poser les bases d’une future intégration dans des outils d’aide au diagnostic, en particulier dans les contextes de télémédecine et de dépistage à grande échelle.
+Ce travail s’inscrit ainsi dans une démarche alliant rigueur scientifique et utilité clinique, avec l’ambition de contribuer concrètement à l’amélioration du dépistage du cancer du sein.
+Structure du rapport 
+Ce rapport est structuré en quatre chapitres complémentaires, permettant d’accompagner progressivement le lecteur depuis les fondements théoriques jusqu’aux résultats expérimentaux.
+Le Chapitre 1 présente les notions médicales essentielles ainsi que les principales approches de classification utilisées en analyse d’images. Il offre un aperçu des techniques traditionnelles et des méthodes basées sur l’intelligence artificielle.
+Le Chapitre 2 est consacré à une revue de la littérature scientifique récente. Il synthétise les contributions majeures dans le domaine du diagnostic assisté par deep learning, en mettant en lumière les tendances, les modèles explorés et les jeux de données disponibles.
+Le Chapitre 3 détaille la méthodologie adoptée : collecte et prétraitement des données, choix des modèles, processus d’entraînement, ainsi que les critères d’évaluation retenus.
+Enfin, le Chapitre 4 expose les résultats expérimentaux, les compare aux approches existantes, et propose une analyse critique des performances obtenues, ouvrant sur des pistes d’amélioration et de déploiement concret.
+Chapitre 1. Notions médicales et approches de classification
+Introduction
+L’essor de l’intelligence artificielle dans le domaine médical s’inscrit dans un contexte où le volume d’images à analyser dépasse largement les capacités humaines. Face à cette réalité, la classification automatique d’images apparaît comme un levier essentiel pour appuyer les décisions cliniques, notamment dans le diagnostic du cancer du sein.
+Ce chapitre pose les bases nécessaires à la compréhension du projet, en explorant les concepts médicaux et techniques fondamentaux qui sous-tendent les approches de classification. Il s'agit de mieux comprendre les enjeux liés à la reconnaissance assistée d’anomalies, ainsi que les évolutions méthodologiques qui rendent cette automatisation aujourd’hui possible et pertinente.
+Le cancer du sein et les modalités d’imagerie 
+1.1.1 Diagnostic du cancer du sein :
+Le cancer du sein est une tumeur maligne qui se forme à partir des cellules de la glande mammaire. Il survient principalement dans les canaux galactophores ou dans les lobules. C’est le cancer le plus fréquent chez la femme à l’échelle mondiale, avec des millions de nouveaux cas chaque année.
+Ce type de cancer peut se développer de manière silencieuse, sans signes cliniques évidents dans les premiers stades. Cela rend le dépistage précoce fondamental pour améliorer le pronostic et limiter les traitements lourds. Lorsqu’il est détecté tôt, le taux de survie à cinq ans peut dépasser 90 %, alors qu’il chute considérablement lorsque la maladie est identifiée tardivement [1].
+Pour poser un diagnostic précis, les professionnels de santé ont recours au triple test, une méthode standardisée et reconnue. Il repose sur trois piliers complémentaires :
+L’examen clinique : réalisé par un professionnel de santé, il consiste en une palpation systématique du sein afin de repérer une masse, une induration, une rétraction ou toute autre anomalie perceptible.
+L’imagerie médicale : elle permet de visualiser les structures internes du sein, de détecter des lésions non palpables, et d’évaluer leur forme, leur taille et leur densité. Elle constitue une étape clé du dépistage et de l’orientation diagnostique
+L’analyse histologique : réalisée à partir d’un prélèvement de tissu, elle permet l’observation des cellules au microscope et la confirmation de leur caractère bénin ou malin. 
+1.1.2 Techniques d’imagerie utilisées dans le diagnostic mammaire 
+Dans le cadre du diagnostic du cancer du sein, plusieurs techniques d’imagerie sont mobilisées selon les besoins cliniques. Chaque modalité repose sur un principe physique différent et offre des informations complémentaires. Elles interviennent à différents moments du parcours diagnostique, du dépistage à la confirmation histologique.
+1.1.2.1 Mammographie 
+La mammographie est un examen d’imagerie qui consiste à prendre une radiographie de chaque sein à l’aide d’un appareil spécialisé appelé mammographe. Elle permet d’observer l’intérieur des tissus mammaires, ce qui aide à repérer d’éventuelles anomalies comme une masse suspecte [2].
+Souvent utilisée dans le cadre du dépistage précoce, notamment chez les femmes ne présentant aucun symptôme, la mammographie est l’outil de référence pour examiner en détail la structure du sein.
+Les images produites sont en noir et blanc, obtenues avec de faibles doses de rayons X, et offrent un excellent niveau de précision. Elles permettent de détecter différents types d’anomalies, comme des masses, des calcifications, ou encore des distorsions du tissu.
+Pour bien explorer le sein, les clichés sont généralement pris sous deux angles : une vue de face (cranio-caudale) et une vue oblique (medio-latérale). Aujourd’hui, la version numérique de la mammographie est de plus en plus courante et tend à remplacer progressivement la version classique sur film, en offrant une qualité d’image améliorée et une meilleure gestion des données. 
+Figure 1: mammography [3]
+1.1.2.2 IRM mammaire 
+L’imagerie par résonance magnétique (IRM) est une technique d’imagerie médicale non invasive qui utilise de puissants champs magnétiques et des ondes radio pour générer des images détaillées des organes internes, des tissus mous et des structures anatomiques du corps.
+L’IRM repose sur l’utilisation d’un champ magnétique intense combiné à des ondes radio à haute fréquence pour produire des images en haute résolution [4].
+Ce type d’imagerie est largement utilisé dans la détection des tumeurs. Il s’agit de l’utilisation de la technologie IRM pour détecter, diagnostiquer, caractériser et surveiller les tumeurs présentes dans l’organisme. Cette approche permet de visualiser les tumeurs, d’évaluer leur taille, leur localisation, leur composition ainsi que leur vascularisation, facilitant ainsi un diagnostic précis, une planification du traitement efficace et un suivi de la réponse thérapeutique par les professionnels de santé. 
+Figure 2: breast MRI [5]
+1.1.2.3 Échographie mammaire 
+L’échographie mammaire, aussi appelée sonographie du sein, est une méthode d’imagerie douce et non invasive, qui repose sur l’utilisation des ultrasons pour examiner les tissus du sein. Elle est totalement indolore, sans rayonnement, ce qui la rend parfaitement sûre même pour les femmes enceintes.
+Contrairement à la mammographie, qui excelle dans la détection des microcalcifications, l’échographie est particulièrement utile pour analyser une masse palpable ou observée à l’imagerie. Elle permet notamment de faire la différence entre une masse solide, potentiellement suspecte, et un kyste rempli de liquide, généralement bénin. Cet examen est très souvent utilisé en complément de la mammographie, notamment chez les femmes jeunes ou celles ayant des seins denses.
+Figure 3 : breast Ultrasound [6]
+1.1.2.4 Imagerie histopathologique 
+L’imagerie histopathologique constitue l’étape ultime et décisive dans le diagnostic du cancer du sein. Elle repose sur l’analyse microscopique de tissus prélevés par biopsie, généralement colorés à l’hématoxyline et à l’éosine (H&E), permettant de visualiser la morphologie cellulaire et tissulaire [7].​
+Cette modalité offre une résolution exceptionnelle, révélant des détails tels que la taille, la forme et l’organisation des noyaux cellulaires, ainsi que la structure des glandes mammaires. Ces caractéristiques sont essentielles pour déterminer le type histologique du cancer et évaluer son grade de différenciation.​
+L’interprétation des images histopathologiques requiert une expertise spécialisée, car elle implique l’examen minutieux de multiples coupes tissulaires pour identifier des anomalies subtiles. Toutefois, cette analyse est sujette à la variabilité inter-observateurs et peut être chronophage. C’est pourquoi des approches automatisées, notamment basées sur l’intelligence artificielle, sont de plus en plus explorées pour assister les pathologistes dans cette tâche complexe.
+Figure 4 : Carcinome canalaire infiltrant (coloration H et E) [8]
+1.1.3 Comparaison des modalités d’imagerie mammaire 
+Afin de comprendre pourquoi l'analyse automatisée des images médicales peut s'avérer être un défi considérable, il est essentiel de prendre un moment pour examiner les diverses méthodes d'imagerie déployées dans le diagnostic du cancer du sein. Chaque technique opère sur une base qui lui est spécifique, produit des images à divers degrés de précision, et entre en jeu à un stade déterminé du processus de soin.Le tableau ci-dessous fournit une comparaison des rôles, des avantages et également des contraintes qu'elles révèlent en pratique.
+Table 1: Différences entre les types d’images médicales
+Critère
+Mammographie
+IRM
+Échographie
+Histopathologie
+Principe
+Rayons X
+Résonance magnétique
+Ultrasons
+Microscopie optique (après biopsie)
+Type d’image
+2D, macroscopique
+3D, haute résolution
+2D/3D, macroscopique
+Microscopique, niveau cellulaire
+Rôle principale
+Dépistage
+Évaluation approfondie / haut risque
+Complément diagnostique
+Confirmation du diagnostic
+Avantages
+Accessible, rapide, bon screening
+Très sensible, visualisation fine
+Non invasif, pas de rayons X
+Précision diagnostique, analyse morphologie
+Limites
+Moins sensible chez seins denses
+Coûteux, disponibilité, faux positifs
+Dépendant de l’opérateur
+Lente, dépend de l’expertise du pathologiste
+Utilisation typique
+Femmes entre 50–74 ans
+Cas complexes / patientes à risque
+Femmes jeunes / masses détectées
+Toute suspicion confirmée par imagerie
+1.2 Principes de la classification d’images médicales 
+1.2.1 Enjeux et définition de la classification d’images mammaires 
+L’attribution automatique d’une ou plusieurs étiquettes à une image médicale, en fonction de son contenu visuel, correspond à ce que l’on appelle la classification d’images médicales. L’objectif est d’identifier des motifs distinctifs permettant de déterminer la présence, l’absence ou la nature d’une anomalie observable.
+Dans le cas du cancer du sein, par exemple, il s’agit souvent de différencier une image représentant un tissu sain d’une image contenant une lésion suspecte ou cancéreuse.
+Cette tâche est essentielle dans les systèmes automatisés d’aide au diagnostic, car elle permet de trier efficacement les images, de signaler les cas à risque, et de guider l’attention du spécialiste vers les zones cliniquement pertinentes. 
+1.2.2 Types de classification 
+Dans le domaine de l'analyse d'images médicales, on utilise généralement trois types de classification : la classification binaire, la classification multilabel et la classification Multi-classes. La décision de privilégier l'une ou l'autre de ces deux méthodes repose sur le degré de précision requis et la situation clinique dans laquelle le modèle est mis en œuvre.
+1.2.2.1 La classification binaire 
+Vise à assigner à chaque image une étiquette parmi deux options : par exemple, « cancer » ou « pas de cancer », « lésion bénigne » ou « lésion maligne ». C'est la situation la plus courante dans les systèmes de dépistage assisté, où le but est de signaler rapidement l'éventuelle présence d'une anomalie. Cette méthode est facile à appliquer et convient parfaitement lorsque l'on a des données clairement distinctes entre deux conditions cliniques différentes.
+1.2.2.2 La classification multi-classes 
+La classification multi-classe offre la possibilité de différencier plusieurs catégories au sein d'un même jeu de données. Par exemple, pour le cancer du sein, il est possible de distinguer différents types histologiques de tumeurs (canalaire, lobulaire...), ou d'attribuer un grade en fonction du degré d'agressivité. Cette méthode est généralement plus complexe et nécessite un volume de données plus conséquent, ainsi qu'un entraînement plus minutieux, mais elle permet une analyse plus détaillée et informative.
+Figure 5: Classification Binaire vs Classification Multi-classes
+1.2.2.3  La classification multilabel 
+Dans certaines situations, une image médicale ne se résume pas à une seule étiquette. Elle peut révéler plusieurs éléments cliniquement significatifs à la fois. C’est précisément ce que permet la classification multilabel : attribuer à une même image zéro, une ou plusieurs étiquettes en parallèle, selon les anomalies qu’elle contient. Contrairement aux classifications binaire ou multi-classes qui imposent un choix exclusif cette approche reflète mieux la complexité de certaines images, notamment quand différentes lésions coexistent, comme une masse suspecte accompagnée de microcalcifications. Bien qu’encore peu utilisée dans le domaine du cancer du sein, elle offre des perspectives intéressantes pour enrichir l’interprétation automatique et mieux accompagner les spécialistes dans les cas les plus délicats.
+1.3 Méthodes traditionnelles de classification 
+Les approches traditionnelles de classification s'appuient sur des méthodes statistiques et des algorithmes traditionnels d'apprentissage automatique. Elles reposent essentiellement sur l'extraction manuelle de caractéristiques visuelles et l'application de règles préétablies pour examiner et classer les données.Dans cette partie, nous allons exposer plusieurs des méthodes traditionnelles fréquemment employées dans le secteur de la classification d'images médicales. Ces techniques ont servi de fondement aux premiers systèmes d'assistance au diagnostic automatisé, avant l'apparition des méthodes intelligentes. 
+1.3.1  Les arbres de décision 
+Un arbre de décision est un algorithme d’apprentissage supervisé non paramétrique, utilisé aussi bien pour la classification que pour la régression. Il se présente sous forme d’une structure hiérarchique composée d’un nœud racine, de branches, de nœuds internes et de feuilles[9].
+Chaque nœud représente une condition logique appliquée à une caractéristique de l’image (forme, texture, densité, etc.), et chaque branche correspond à une réponse possible. Le chemin suivi jusqu’à une feuille permet d’aboutir à une prédiction finale : une classe ou une valeur, selon la tâche visée.
+L’un de ses principaux atouts est sa lisibilité. La structure de l’arbre facilite la compréhension du raisonnement, un critère important dans le domaine médical où l’interprétabilité est essentielle.
+En revanche, ce type de modèle peut rapidement devenir instable ou sujette au surapprentissage, surtout lorsqu’il est trop complexe. Il reste également limité dans l’analyse d’images médicales riches en détails, où les relations spatiales sont difficiles à traduire par de simples règles conditionnelles.
+Figure 6 : Exemple D’arbre de décision
+1.3.2  L’algorithme des k plus proches voisins (KNN) 
+K-Nearest Neighbors (KNN) est un modèle d'apprentissage automatique supervisé qui peut être utilisé pour des tâches de régression et de classification. L'algorithme est non paramétrique, ce qui signifie qu'il ne repose sur aucune hypothèse préalable concernant la distribution des données[10].
+Le principe est simple : pour prédire la classe d’une nouvelle donnée, l’algorithme recherche les k exemples les plus proches dans l’ensemble d’apprentissage, selon une mesure de distance (souvent la distance euclidienne). La classe la plus fréquente parmi ces voisins est ensuite attribuée à l’échantillon inconnu.
+Cette approche intuitive permet d’obtenir des résultats acceptables dans des cas simples, sans phase d’apprentissage complexe. Toutefois, KNN présente plusieurs limites :
+Il est sensible au bruit et aux données aberrantes,
+Ses performances tendent à se dégrader lorsque le volume de données à traiter devient important.
+Il est fortement influencé par le choix du paramètre k, ainsi que par la fonction de distance utilisée.
+Dans le contexte de l’analyse d’images médicales, le KNN peut être utilisé pour des classifications simples basées sur des descripteurs extraits manuellement, mais il est peu adapté aux tâches plus complexes nécessitant une compréhension plus profonde du contenu visuel.
+1.3.3 Support Vector Machines (SVM) 
+Les Support Vector Machines (SVM) sont des modèles d’apprentissage supervisé introduits en 1995 par Vladimir Vapnik, dans le cadre de la théorie de l’apprentissage statistique. Ils sont largement utilisés pour des tâches de classification et de régression, grâce à leur capacité à trouver une frontière de décision optimale entre différentes classes[12].
+Le principe fondamental d’un SVM consiste à construire un hyperplan qui sépare les données en maximisant la marge entre les points les plus proches des deux classes opposées appelés vecteurs de support. Une marge plus large permet une meilleure généralisation, ce qui améliore les performances sur des données inédites.
+Dans les cas où les données sont linéairement séparables, un SVM est capable de définir une séparation nette dans l’espace des caractéristiques. Pour les données non linéaires, il utilise le kernel trick pour projeter les points dans un espace de dimension supérieure où une séparation linéaire devient possible.
+Afin de mieux gérer les données bruitées ou ambigües, les SVM intègrent des marges souples via l’introduction de variables d’assouplissement, permettant ainsi de tolérer quelques erreurs de classification. Les hyperparamètres tels que le paramètre C (qui contrôle la régularisation) et le choix du noyau sont essentiels et nécessitent une validation croisée pour optimiser les performances du modèle.
+Grâce à leur robustesse et à leur efficacité dans des contextes à forte dimensionnalité, les SVM sont très prisés dans des domaines comme la reconnaissance d’images, la détection de spam, ou encore la classification médicale.
+Figure 7: SVM [11]
+1.4  Méthodes de classification intelligentes 
+Grâce aux avancées récentes en intelligence artificielle, les techniques de classification ont connu une véritable transformation. Contrairement aux approches traditionnelles fondées sur des descripteurs manuels et des règles prédéfinies, les modèles dits « intelligents » sont capables d’apprendre directement à partir des données, en particulier à partir des images.
+Les réseaux de neurones artificiels, et plus largement les méthodes de deep learning, se sont imposés comme des outils puissants pour analyser des structures visuelles complexes, telles que celles présentes dans les mammographies ou les images histopathologiques. Cette section présente les principales familles de réseaux utilisées en classification d’images médicales, en mettant en lumière leurs spécificités et leur contribution dans le cadre du diagnostic assisté par intelligence artificielle.
+Figure 8 : IA appliquée aux mammographies [12]
+1.4.1  Artificial Neural Networks (ANN) 
+Les réseaux de neurones artificiels (ANN) sont des modèles d’apprentissage automatique inspirés du fonctionnement des neurones biologiques. Ils sont constitués de couches de neurones interconnectés, organisées en une couche d’entrée, une ou plusieurs couches cachées, et une couche de sortie.Chaque neurone reçoit des entrées pondérées, applique une fonction d’activation non linéaire, puis transmet le résultat à la couche suivante.
+Les ANN utilisent un processus itératif appelé rétropropagation, dans lequel les erreurs calculées par une fonction de perte sont propagées en arrière à travers le réseau afin d’ajuster les poids et optimiser les performances du modèle.Cette méthode permet de modéliser des relations complexes et non linéaires, ce qui rend les ANN adaptés à des tâches variées telles que la classification, la régression ou l’analyse de séries temporelles.
+Bien que puissants, les ANN nécessitent généralement de grandes quantités de données et des ressources de calcul importantes pour être entraînés efficacement.Ils constituent néanmoins une brique fondamentale sur laquelle reposent de nombreuses avancées récentes en deep learning.
+Figure 9 : Architecture de  ANN [13]
+1.4.2 Deep Neural Networks (DNN) 
+Dans le contexte de la classification d’images, les Deep Neural Networks (DNN) peuvent être utilisés selon deux approches principales :
+Classification à étiquette unique (single-label) : chaque image est associée à une seule étiquette parmi un ensemble de classes exclusives. Si l’on distingue deux classes, il s’agit d’un problème binaire ; au-delà, on parle de classification multi-classes. Cette approche est utilisée dans la majorité des bases d’images classiques telles que MNIST, CIFAR-10/100 ou ImageNet, où une seule classe est attribuée à chaque image.
+Classification multi-étiquettes (multi-label) : ici, une image peut être liée à plusieurs étiquettes simultanément. Par exemple, dans des bases comme COCO ou imSitu, une seule image peut représenter plusieurs objets à la fois . Le modèle doit donc être capable de détecter l’ensemble des éléments présents.
+Dans les deux cas, un DNN apprend à représenter l’image dans un espace latent à l’aide de vecteurs de caractéristiques extraits dans les couches intermédiaires. Les couches suivantes assurent la classification, en apprenant à séparer les différentes classes par des frontières décisionnelles.
+L’efficacité du modèle repose sur sa capacité à maintenir une séparation suffisante entre les représentations internes des classes. Si deux classes deviennent trop proches dans cet espace, cela indique une mauvaise discrimination, susceptible d'entraîner des erreurs de prédiction[14].
+1.4.3  Convolutional Neural Networks (CNN) 
+Les Réseaux de Neurones Convolutionnels (CNN) représentent une catégorie spécifique de réseaux neuronaux profonds, dédiée au traitement des images. Leur structure repose sur le concept de la convolution, une opération mathématique qui facilite l'identification automatique de motifs locaux dans une image, comme les contours, les textures ou les formes. Les CNN utilisent la structure spatiale des images en se basant sur trois types de couches principales :
+Les couches de convolution, qui extraient les caractéristiques locales à l’aide de filtres glissants.
+Les couches de pooling, qui réduisent la dimension des données tout en conservant les informations essentielles, afin de limiter la complexité du modèle.
+Les couches entièrement connectées, situées en fin de réseau, qui assurent la prise de décision .
+Cette combinaison permet aux réseaux de neurones convolutifs (CNN) de gérer efficacement des images de grande dimension avec une réduction du nombre de paramètres, tout en maintenant un niveau élevé de performance. Dans le secteur de l'imagerie médicale, les réseaux de neurones convolutifs ont prouvé leur compétence exceptionnelle pour identifier les anomalies sur les radiographies, IRM ou mammographies. Ils ont la capacité de reconnaître automatiquement des traits visuels distinctifs tels que les microcalcifications, les masses irrégulières ou les distorsions architecturales, sans qu'une intervention humaine soit nécessaire pour déterminer ces caractéristiques.Plusieurs architectures CNN réputées ont laissé leur empreinte dans le domaine de la recherche sur la classification d'images :
+AlexNet, qui a ouvert la voie à la reconnaissance d’images à grande échelle.
+VGGNet, qui introduit des couches de convolution plus profondes et plus fines.
+ResNet, qui se distingue par l’introduction de connexions résiduelles permettant d’apprendre efficacement dans des réseaux très profonds, en facilitant la transmission d’informations à travers les couches.
+DenseNet, qui connecte chaque couche à toutes les précédentes, favorisant la réutilisation des caractéristiques et réduisant le nombre de paramètres.
+L’efficacité des CNN peut encore être renforcée grâce à des techniques comme le transfer learning, qui consiste à réutiliser des modèles pré-entraînés sur d'autres jeux de données, ou la data augmentation, qui enrichit artificiellement les bases d’entraînement pour améliorer la robustesse du modèle.
+Figure 10: Convolutional Neural Network architecture [15]
+Conclusion
+Ce premier chapitre nous a permis de poser les bases nécessaires à la compréhension du projet. Nous avons d’abord découvert les spécificités du cancer du sein et les outils d’imagerie qui permettent d’en repérer les signes. Qu’il s’agisse de mammographie, d’échographie, d’IRM ou d’imagerie histopathologique, chaque modalité apporte sa propre vision, mais aussi son lot de défis.
+Nous avons ensuite abordé les principes de la classification d’images médicales, une tâche aussi complexe qu’essentielle, qui consiste à aider les médecins à trier et interpréter une grande quantité de données visuelles. En comparant les approches classiques, fondées sur des règles fixes, et les approches plus récentes, capables d’apprendre directement à partir des images, nous avons mis en lumière une évolution majeure dans la manière dont on peut automatiser et fiabiliser l’analyse.
+Dans le chapitre suivant, nous irons plus loin en explorant ce qui a déjà été fait dans ce domaine. À travers une revue de la littérature scientifique, nous verrons comment d’autres chercheurs ont tenté de résoudre les mêmes problématiques, quels outils ils ont mobilisés, et quelles limites ils ont rencontrées. Cela nous permettra de mieux situer notre propre démarche dans un paysage de recherche en pleine évolution.
+Chapitre 2. Revue de la littérature
+Introduction
+Classer des images médicales n’est pas une tâche simple. De nombreux chercheurs s’y sont penchés, en développant des approches toujours plus performantes pour aider les professionnels de santé à poser un diagnostic plus rapide et plus fiable.
+Dans ce chapitre, nous allons revenir sur les principales méthodes proposées dans la littérature : qu’il s’agisse d’algorithmes classiques ou de modèles d’apprentissage profond, nous verrons comment ces solutions ont été pensées, testées, et avec quels résultats.
+Cette analyse nous aidera à mieux cerner les tendances actuelles, les choix techniques les plus pertinents, mais aussi les limites qui freinent encore certains modèles. Elle nous servira surtout à poser les bases de notre propre démarche, en nous appuyant sur ce qui a déjà été fait et appris.
+2.1 Méthodologie de recherche
+La construction de ce travail s’appuie sur une recherche documentaire rigoureuse menée à partir de bases de données scientifiques reconnues, telles que Google Scholar, PubMed et SpringerLink. L’objectif était de recenser les contributions récentes dans le domaine de l’apprentissage profond appliqué à la classification d’images médicales.
+Pour cela, nous avons utilisé des mots-clés ciblés entre guillemets tels que :
+"deep learning" AND "medical image classification"
+"transfer learning" AND "binary classification"
+"convolutional neural network" AND "medical diagnosis"
+"explainable AI" AND "healthcare imaging"
+"bidirectional LSTM" AND "image-based sequence learning".
+La recherche a été limitée aux publications entre 2020 et 2024, afin de s’assurer que les approches retenues reflètent les dernières avancées méthodologiques dans le domaine.
+Les travaux analysés ont en commun :
+L’utilisation d’architectures variées telles que CNN, VGG, ResNet, DenseNet, EfficientNet,
+L’intégration de techniques comme le transfer learning, le fine-tuning, ou encore l’augmentation de données,
+L’évaluation à l’aide de métriques standards telles que accuracy, F1-score, AUC,
+Et pour certains, l’introduction de méthodes d’explicabilité comme Grad-CAM ou LIME, favorisant une interprétation transparente des prédictions.
+Cette veille scientifique a guidé l’élaboration de notre pipeline expérimental, tant dans le choix des modèles que dans la définition des stratégies d’entraînement et d’évaluation.
+2.2 Travaux connexes
+Plusieurs recherches récentes se sont intéressées à l’utilisation des réseaux de neurones dans le diagnostic du cancer du sein à partir d’images médicales. Ces travaux ont exploré différentes architectures de deep learning, souvent couplées à des techniques de transfert d’apprentissage et de prétraitement pour améliorer la robustesse des modèles. Dans cette section, nous présentons un aperçu de quelques contributions marquantes, en soulignant les approches adoptées, les jeux de données utilisés, et les performances obtenues.
+L’étude menée par Abunasser [16] introduit un modèle de deep learning appelé BCCNN, conçu pour la classification automatique du cancer du sein à partir d’images histopathologiques. Les auteurs utilisent la base de données publique BreakHis, qu’ils enrichissent à l’aide de GANs, portant le volume d’images de 7 909 à 40 000. Leur approche couvre huit types tumoraux (quatre bénins, quatre malins) et quatre niveaux de grossissement (40X, 100X, 200X, 400X).
+Ils comparent leur modèle à cinq architectures pré-entraînées bien connues (Xception, InceptionV3, ResNet50, VGG16, MobileNet), toutes optimisées sur le même jeu de données. Le modèle BCCNN se démarque nettement, atteignant une précision de 98,3 % et un score F1 de 98,28 % à 400X de grossissement.
+Au-delà de la performance, cette étude met en avant l’intérêt d’une classification multiclasses souvent négligée au profit de l’approche binaire ainsi que l’impact positif de l’augmentation de données et du prétraitement sur la robustesse des modèles. Ces éléments en font une contribution utile pour renforcer l’aide au diagnostic en anatomopathologie.
+L’étude de Ragab [17] exploite des images échographiques dans le but d’automatiser l’identification et la classification des lésions mammaires à partir d’images échographiques. En s’appuyant sur la base publique Breast Ultrasound Dataset (780 images, dont 133 normales, 437 bénignes et 210 malignes), les auteurs construisent un pipeline complet et structuré, allant du prétraitement à la classification finale.
+Le traitement commence par une amélioration de la qualité des images (filtre de Wiener, rehaussement de contraste CLAHE), suivie d’une segmentation appliquant l’algorithme Chaotic Krill Herd, combiné à l’entropie de Kapur. Les caractéristiques sont extraites via trois réseaux pré-entraînés (VGG-16, VGG-19 et SqueezeNet), fusionnées, puis filtrées par sélection entropique.
+Pour la classification, un MLP est utilisé, optimisé par l’algorithme Cat Swarm Optimization. Le modèle obtenu atteint une précision, une sensibilité et une spécificité supérieures à 97 %, surpassant les performances de modèles tels que VGG16, VGG19 ou DenseNet161.
+L’étude met en évidence l’importance d’un pipeline rigoureux et bien calibré pour fiabiliser le diagnostic assisté à partir des échographies mammaires.
+Face au défi du “domain shift” en classification de mammographies, Charalampos Lamprou [18] proposent un modèle visant à combiner robustesse et capacité de généralisation. Leur approche repose sur l’intégration de réseaux convolutifs pré-entraînés (ResNet50V2, Xception), affinés par transfert d’apprentissage, et sur l’utilisation d’un classifieur SVM, reconnu pour sa stabilité en classification supervisée.
+Pour pallier les variations entre jeux de données (résolution, protocole, population), les auteurs mettent en place un prétraitement fondé sur l’entropie, permettant d’harmoniser les distributions d’images via le contraste et la normalisation des histogrammes. Les hyperparamètres du système sont optimisés grâce à une recherche bayésienne.
+Le modèle est entraîné sur la base CMMD, puis évalué sur deux bases externes : VinDr-Mammo et INbreast. L'interprétabilité est assurée à l’aide de la méthode Grad-CAM, qui permet de visualiser les zones activées par le modèle, en les comparant aux annotations réalisées par les radiologues.
+L’approche atteint un AUC de 85,7 % sur VinDr-Mammo, confirmant l’intérêt de cette stratégie hybride combinant deep learning, adaptation de domaine et méthodes explicables pour un usage en pratique clinique.
+Pour explorer l’équilibre entre performance et simplicité, Masud [19] ont comparé plusieurs modèles de deep learning appliqués à la classification du cancer du sein à partir d’images échographiques. Leur étude met face à face huit architectures pré-entraînées populaires (VGG16, ResNet18/50, GoogleNet, AlexNet, Xception…) et un modèle CNN sur mesure, conçu spécifiquement pour cette tâche.
+Leur ensemble de données combine deux bases publiques BUSI (Université de Baheya) et BUD (Kaggle)  intégrant trois classes : bénigne, maligne et normale. Après une phase de prétraitement rigoureux (standardisation, redimensionnement, normalisation), les auteurs appliquent l’apprentissage par transfert pour entraîner les modèles, en testant également différents optimisateurs (Adam, RMSprop, SGDM) dans le cadre d’une validation croisée à cinq plis.
+Les résultats sont frappants : VGG16 atteint une AUC de 0,972 et une précision de 92 %, tandis que le modèle personnalisé, bien que très simple (une seule couche de convolution), atteint une précision de 100 % et une AUC parfaite de 1,0. Il offre également un temps d’entraînement réduit et une meilleure transparence via Grad-CAM.
+Cette étude souligne qu’un modèle peu profond, bien optimisé et adapté à la taille des données, peut rivaliser voire dépasser les approches complexes, tout en étant plus facile à interpréter un avantage réel en contexte clinique.
+En explorant de nouvelles formes d’apprentissage collaboratif, Kaur [20] proposent une approche innovante pour le diagnostic du cancer du sein à partir d’images histopathologiques, basée sur le Deep Mutual Learning (DML). Cette méthode repose sur l’entraînement parallèle de deux réseaux de neurones identiques, qui s’enrichissent mutuellement au fil des itérations, dans le but de distinguer les tissus bénins des tissus malins.
+L’étude mobilise trois bases de données spécialisées : BreakHis, BACH et PUIH, couvrant différents niveaux de grossissement et de résolution. Grâce à cette approche coopérative, les modèles atteignent une précision de 98 % sur BreakHis, et 96 % sur BACH et PUIH, tout en améliorant la localisation des régions d’intérêt dans les images.
+Les résultats démontrent une nette supériorité par rapport aux méthodes traditionnelles, tant sur le plan de la précision que de l’interprétabilité. Le DML apparaît ainsi comme une piste prometteuse pour renforcer les outils de diagnostic assisté dans le domaine de l’anatomopathologie.
+Tirant parti de la complémentarité entre modèles profonds, Balasubramanian [21] introduisent une approche fondée sur l’ensemble learning pour la classification des images histopathologiques mammaires. Leur méthode vise à déterminer à la fois le sous-type tumoral et le caractère invasif de la tumeur, à partir d’images de lames entières (WSI).
+Deux bases de données sont mobilisées : BACH, contenant des images classées en quatre catégories (normal, bénin, carcinome in situ, carcinome invasif), et BreakHis, qui offre des images multi-échelles de tissus bénins ou malins. Pour BACH, chaque image haute résolution est divisée en patchs de 256×256 pixels, ce qui facilite une analyse ciblée et réduit la complexité computationnelle. Les modèles VGG16 et ResNet50 (pré-entraînés sur ImageNet) sont ajustés pour extraire les attributs visuels clés, puis combinés dans un modèle composite exploitant leurs forces respectives. Sur BreakHis, un schéma similaire est appliqué, incluant également ResNet34 pour couvrir les huit sous-types.
+Les performances sont remarquables : l’approche atteint 95,31 % de précision sur BACH, et 98,43 % sur BreakHis, avec un pic à 99,72 % pour la classification binaire bénin/malin surpassant des modèles avancés tels que DenseNet121-AnoGAN, DenTnet ou DRDA-Net.
+Cette étude met en lumière l’intérêt de l’ensemble learning couplé à une analyse multiscale pour accroître la robustesse des modèles face à la variabilité des données histologiques. Les auteurs y voient une piste sérieuse pour accélérer les diagnostics, améliorer la prise de décision clinique, et poser les bases d’applications fiables et personnalisées en pathologie numérique.
+Dans une approche mêlant extraction de textures classiques et deep learning, Gül  [22] s’attaque à la classification des images histopathologiques du cancer du sein en développant deux techniques complémentaires : les motifs locaux binaires (LBP) et une nouvelle variante baptisée QS-LBP (Quadrant-Split Local Binary Patterns). L’évaluation est menée sur deux bases de données : BreakHis, riche en images à différents niveaux de grossissement, et un vaste jeu de données issu de l’Université de Pennsylvanie et du Cancer Institute of New Jersey.
+La méthode QS-LBP repose sur une extraction de textures à partir de patchs de 5×5 pixels, permettant de mieux capturer la variabilité morphologique des tissus. Les descripteurs ainsi extraits sont ensuite analysés à l’aide de classifieurs supervisés, notamment Random Forest et Optimized Forest. Sur BreakHis, l’approche QS-LBP couplée à Random Forest atteint une précision de 94,6 %, un F1-score de 92,3 % et une AUC de 97,9 %. Sur la grande base, la précision reste supérieure à 92 %.
+En parallèle, l’auteur propose un CNN profond de 20 couches, conçu sur mesure. Ce modèle dépasse les performances de QS-LBP avec 98,3 % de précision, 98 % de F1-score et 97 % d’AUC, démontrant une meilleure robustesse et capacité de généralisation face à la variabilité des images.
+Cette étude illustre l’apport des approches hybrides combinant interprétabilité des motifs classiques et puissance des réseaux neuronaux pour réduire la variabilité inter-observateurs et fiabiliser le diagnostic du cancer du sein dans un cadre clinique.
+Pour répondre aux besoins croissants en diagnostic rapide et fiable, Gandhi [23] développent un système automatisé basé sur le deep learning pour l’analyse des images histopathologiques du cancer du sein. Leur modèle s’appuie sur la base de données publique Breast Histopathology Images (IDC dataset), composée de plus de 277 000 patchs de 50×50 pixels extraits de lames numérisées.
+L’architecture proposée est un CNN personnalisé, intégrant des couches de convolution, de pooling et de normalisation, conçu spécifiquement pour détecter la présence ou l’absence de carcinome canalaire invasif (IDC). Afin d’accroître la robustesse et la capacité de généralisation, les auteurs appliquent des techniques de prétraitement et d’augmentation de données, et valident le modèle via une séparation stricte entre l’entraînement et les tests, en s’appuyant sur des métriques classiques (accuracy, F1-score, AUC).
+Les résultats sont particulièrement encourageants : 98,51 % de précision et un AUC de 0,996, surpassant plusieurs approches de référence. Le modèle se distingue également par sa légèreté computationnelle et son potentiel de déploiement clinique rapide, rendant possible une détection automatisée à la fois rapide, précise et facilement intégrable dans un environnement médical.
+En conclusion, les auteurs estiment que ce type d’outil pourrait soulager les pathologistes, réduire le risque d’erreurs humaines et accélérer la prise en charge des patientes, en contribuant à une détection plus précoce du cancer du sein.
+Enfin, les auteurs soulignent que ce type de solution, une fois validée à grande échelle, pourrait alléger considérablement la charge de travail des pathologistes, réduire le risque d’erreurs humaines, et favoriser une détection plus précoce et plus précise du cancer du sein.
+À travers cette revue, il apparaît clairement que les avancées en intelligence artificielle transforment en profondeur la manière dont le cancer du sein est diagnostiqué. Derrière chaque nouvelle approche qu’il s’agisse de réseaux neuronaux innovants, de stratégies d’ensemble, ou d’apprentissages collaboratifs se dessine une ambition commune : rendre l’analyse des images plus rapide, plus fiable, et plus accessible.
+Ces progrès ne repoussent pas seulement les frontières technologiques : ils ouvrent la voie à des outils concrets pour les professionnels de santé, capables d’affiner les diagnostics, de mieux cibler les traitements, et in fine, d’améliorer la prise en charge des patientes.
+Table 2: Synthèse des modèles d’IA pour le diagnostic du cancer du sein
+Référence
+Datasets
+Modèle
+Accuracy
+Task
+Type data
+Metric
+Abunasser et al., (2023)
+BreakHis + GAN
+BCCNN 
+98,30%
+Multi-class
+Histopathologie
+F1-score
+Xception
+94.0%
+ResNet
+96.2%
+ VGG16
+95.2%
+Ragab et al., (2022)
+BUD
+EDLCDS-BDCD(fusion MLP+CNN)
+97.7%
+Binaire/
+Echographie
+Accuracy
+VGG16
+95.6%
+tri-class
+VGG19
+95.8%
+DenseNet161
+93.2%
+Lamprou et al., (2024)
+CMMD
+SVM+ ResNet50V2
+AUC 
+Binaire
+Mammographie 
+AUC
+VINDR
+Xception
+85,70%
+Inbreast
+ 
+Auc 84.9%
+Masud et al., (2024)
+BUSI, BUD
+CNN personnalisé
+100%
+Tri-class
+Echographie
+Accuracy
+VGG16
+92%
+ResNet
+93%
+AlexNet
+91%
+Kaur et al., (2024)
+BreakHis,
+DML (BreakHis)
+98,90%
+Binaireb
+Histopathologie
+F1-score
+BACH,
+DML(BACH)
+96.8%
+Binaire/ Multi
+PUIH
+DML(PIUH)
+96.3%
+Balasubramanian et al. (2024)
+BACH , BreakHis
+Ensemble (VGG/ResNet, patching) 
+99.7%
+Multi-class/binaire
+Histopathologie
+Accuracy
+DenseNet121-AnoGAN
+97.3%
+Gül (2025) 
+BreakHis, Penn/NJ
+CNN profond (20 couches)
+98.3%
+Binaire
+Histopathologie
+AUC
+QS-LBP + Random Forest
+94.6%
+Gandhi et al., (2024) 
+IDC 
+CNN personnalisé
+98.5%
+Binaire
+Histopathologie
+AUC
+2.3 Jeux de données disponibles et leurs limites 
+L'efficacité des modèles d'apprentissage profond pour le diagnostic automatisé du cancer du sein est fortement liée à la qualité, à la variété et à la représentativité des ensembles de données exploités pour leur conception. Au cours des dernières années, différentes bases de données publiques ont été reconnues comme références dans le domaine de la recherche, chacune ayant des caractéristiques qui impactent la performance et l'applicabilité générale des algorithmes. Avant d'examiner les points forts et faibles de chaque ensemble de données, il est essentiel de fournir une vue d'ensemble synthétique pour mieux apprécier leur contribution respective à l'évolution des méthodes d'intelligence artificielle dans l'analyse des images mammaires.
+Table 3: Tableau comparatif des bases de données pour le diagnostic du cancer du sein
+Jeu de données
+Type d’images
+Nombreimages
+Annotation
+Données disponibles
+Avantages
+Limites
+BreakHis
+Histopathologie
+7900
+8 classes (multi-échelle)
+Image
+Multiclasses, diversité morphologique, référence IA
+Peu de patientes, déséquilibre des classes, peu de données cliniques
+BACH
+Histopathologie
+400
+4 classes
+Image
+Annotations expertes, multicentricité, tumeurs bien différenciées
+Taille très réduite, peu de contexte clinique
+IDC dataset
+Histopathologie(Patch)
+277 524
+Binaire
+Image
+Volume de données, simplicité, idéal CNN
+Patchs localisés sans vue globale
+Vindr-Mammo
+Mammographie
+5000
+Lésions et densité
+Images + métadonnées cliniques 
+Annotations fines, données récentes, compatible IA
+Contexte géographique limité,peu d’études comparatives
+CBISS-DDSM
+Mammographie
+2600
+BI-RADS, anomalies
+Images + métadonnées
+Grande variété, annotations radiologiques, standards cliniques
+Fichiers lourds, prétraitement complexe, déséquilibre de classes
+BUSI
+Echographie
+780
+3 Classes
+Image
+Modalité complémentaire, annotations cliniques fiables
+Effectif restreint, variabilité opérateur, nécessité d’augmentation artificielle
+CMMD
+Mammographie
+5202
+Annotations cliniques + patho
+Images + métadonnées cliniques
+Taille conséquente, métadonnées cliniques, cas réels, diversité technique
+Images issues d’un même pays, diversité ethnique limitée, nécessité d’adaptation pour généralisation
+Mias
+Mammographie
+327
+Anomalies, contours, types
+Images + âge, position, type de lésion
+Facilement accessible, annotations précises, idéale pour détection
+Petite taille, images anciennes, résolution inférieure, diversité limitée
+Conclusion 
+Cette étude souligne la variété des méthodes employées pour le diagnostic du cancer du sein à partir d'images médicales, tout en mettant en évidence les défis liés à leur mise en œuvre clinique. Bien que les résultats obtenus par les modèles de deep learning soient encourageants, leur mise en œuvre pratique repose toujours sur leur faculté à s'ajuster à différentes situations, à conserver une certaine interprétabilité et à gérer des données généralement variées.Dans le chapitre qui suit, nous présenterons notre propre apport à ce domaine. Dans ce document, nous détaillerons les décisions méthodologiques prises, les données utilisées et les phases nécessaires pour concevoir un modèle pertinent et performant face à ces enjeux.
+Chapitre 3. Méthodologie
+Introduction
+Ce chapitre décrit la stratégie mise en place pour développer un système intelligent de détection du cancer du sein à partir d’images médicales. L’ensemble du processus est structuré en plusieurs étapes successives : préparation des données, prétraitement, choix et construction des modèles, entraînement, puis évaluation.Nous avons adopté une approche comparative, testant à la fois un réseau neuronal convolutif conçu sur mesure et plusieurs modèles issus du transfert d’apprentissage. L’objectif est d’identifier l’architecture la plus performante en termes de précision et de robustesse.
+3.1 Vue globale de l’architecture proposée 
+Le pipeline mis en place pour la classification du cancer du sein repose sur une succession d’étapes bien structurées, allant de la préparation des données jusqu’à l’évaluation finale du modèle. La figure ci-dessous illustre cette architecture globale.
+Le processus comprend le chargement et le nettoyage des images, le redimensionnement, la normalisation, l’augmentation des données, ainsi que l’extraction de caractéristiques via des modèles pré-entraînés ou un CNN personnalisé. Les modèles sont ensuite entraînés et évalués à l’aide de métriques classiques de classification.
+DATA COLLECTING AND LOADINGDATA COLLECTING AND LOADING
+DATA COLLECTING AND LOADING
+DATA COLLECTING AND LOADING
+DATA UNDERSTANDINGSDATA UNDERSTANDINGS
+DATA UNDERSTANDINGS
+DATA UNDERSTANDINGS
+DATA PREPROCESSING DATA PREPROCESSING 
+DATA PREPROCESSING 
+DATA PREPROCESSING 
+GENERATION OF THE TRAIN / VAL / TEST DATASETGENERATION OF THE TRAIN / VAL / TEST DATASET
+GENERATION OF THE TRAIN / VAL / TEST DATASET
+GENERATION OF THE TRAIN / VAL / TEST DATASET
+ResNet50V2ResNet50V2VGG19VGG19EfficientNetB0EfficientNetB0FEATURE EXTACTION USING TRANSFER LEARNINGFEATURE EXTACTION USING TRANSFER LEARNINGDenseNet21DenseNet21
+ResNet50V2
+ResNet50V2
+VGG19
+VGG19
+EfficientNetB0
+EfficientNetB0
+FEATURE EXTACTION USING TRANSFER LEARNING
+FEATURE EXTACTION USING TRANSFER LEARNING
+DenseNet21
+DenseNet21
+MODELING : CLASSIFICATION              PRE-TRAINED MODELS            DEEP LEARNING MODELSMODELING : CLASSIFICATION              PRE-TRAINED MODELS            DEEP LEARNING MODELS
+MODELING : CLASSIFICATION 
+             PRE-TRAINED MODELS            DEEP LEARNING MODELS
+MODELING : CLASSIFICATION 
+             PRE-TRAINED MODELS            DEEP LEARNING MODELS
+ResNet50V2ResNet50V2CNNCNNVGG19 /DenseNet1211 DenseNet121VGG19 /DenseNet1211 DenseNet121EfficientNetB0EfficientNetB0BiLSTMBiLSTM
+ResNet50V2
+ResNet50V2
+CNN
+CNN
+VGG19 /DenseNet121
+1
+ DenseNet121
+VGG19 /DenseNet121
+1
+ DenseNet121
+EfficientNetB0
+EfficientNetB0
+BiLSTM
+BiLSTM
+MODEL TRAININGMODEL TRAINING
+MODEL TRAINING
+MODEL TRAINING
+MODELS EVALUATIONMODELS EVALUATION
+MODELS EVALUATION
+MODELS EVALUATION
+DEPLOYMENT / IMPLEMENTATIONDEPLOYMENT / IMPLEMENTATION
+DEPLOYMENT / IMPLEMENTATION
+DEPLOYMENT / IMPLEMENTATION
+Figure 11: schéma de l’architecture globale
+3.2 Collecte et prétraitement des données
+3.2.1 Collecte des données
+Ce travail repose sur un jeu de données d’images histopathologiques du sein, spécifiquement centré sur le carcinome canalaire invasif (IDC), la forme la plus courante de cancer du sein. Les images sont issues de lames entières scannées à haute résolution, puis découpées en patchs de 50 × 50 pixels annotés selon la présence (classe 1) ou l’absence (classe 0) de cellules cancéreuses.
+Bien que le dataset complet contienne plus de 270 000 échantillons, un sous-ensemble de 4 755 images a été extrait de manière aléatoire, afin de garantir la faisabilité du projet sur des ressources matérielles standards.
+Pour optimiser la flexibilité du développement et permettre un chargement dynamique et portable, toutes les images de chaque classe ont été regroupées dans deux dossiers distincts ("0" pour bénin, "1" pour malin). Cette organisation permet d'utiliser des structures de DataFrame et des générateurs d’images robustes tout en facilitant le déplacement du projet sur différents postes de travail, notamment lors de sessions de travail hors connexion.
+3.2.2 Étapes de prétraitement 
+Le prétraitement des images constitue une étape déterminante dans la préparation des données pour l'entraînement de modèles d'apprentissage automatique. Il permet de garantir que les images fournies au réseau de neurones sont cohérentes, standardisées et optimisées pour les architectures de deep learning, améliorant ainsi la performance et la stabilité de l’apprentissage.  
+Chargement et organisation des données
+Les images ont été extraites à partir de deux répertoires correspondant aux classes bénin (étiquette 0) et malin (étiquette 1). Un script Python a permis de parcourir ces dossiers et de stocker les chemins des fichiers dans un tableau (DataFrame) avec les labels associés, facilitant ainsi le traitement ultérieur.
+Nettoyage des données et gestion des valeurs manquantes
+Avant toute phase de prétraitement ou d'entraînement, il est indispensable de s’assurer que les données ne présentent ni anomalies ni incohérences. Ainsi, une étape de nettoyage des données a été menée.
+Pour cela, la fonction isnull() a été utilisée afin de détecter d’éventuelles valeurs manquantes dans l’ensemble du DataFrame. En parallèle, la fonction duplicated() a permis d’identifier les lignes en double qui pourraient fausser l’apprentissage du modèle.
+Ce contrôle a pour objectif de garantir l’intégrité des données, en éliminant toute valeur absente, erronée ou redondante. Cette étape est cruciale afin de disposer d’un jeu de données fiable et exploitable pour la suite du processus d'entraînement.
+Un extrait de cette vérification est présenté à la figure suivante , illustrant que le dataset ne contient ni valeurs manquantes ni doublons significatifs.
+Figure 12: Nettoyage des données et gestion des valeurs manquantes
+Répartition des données 
+Afin de garantir une évaluation rigoureuse et indépendante des modèles développés, le jeu de données a été réparti selon une stratégie de séparation stricte. Tout d’abord, 95 % des images ont été allouées à la phase d’apprentissage. À l’intérieur de ce sous-ensemble, une nouvelle répartition a été effectuée, avec 90 % des données réservées à l'entraînement proprement dit, et 10 % dédiées à la validation, afin d’ajuster les hyperparamètres et de surveiller le surapprentissage. Enfin, les 5 % restants du dataset initial ont été conservés comme jeu de test final, servant à mesurer la performance réelle des modèles sur des données totalement inédites.
+Figure 13: Répartition des données
+Redimensionnement et normalisation 
+Toutes les images, à l’origine de 50×50 pixels, ont été redimensionnées en 224×224 pixels, une taille standard compatible avec les principales architectures de réseaux de neurones convolutifs pré-entraînés. Une normalisation a ensuite été appliquée, consistant à ramener les valeurs des pixels dans l’intervalle [0,1], afin d’assurer une cohérence des échelles et faciliter la convergence des modèles.
+Augmentation des données 
+Afin d’accroître la robustesse des modèles et de limiter le surapprentissage, une augmentation de données a été appliquée dynamiquement au moment de l'entraînement. Les transformations aléatoires utilisées incluent :
+Des rotations jusqu’à 40°
+Des translations verticales et horizontales (jusqu’à 20 %)
+Du cisaillement et du zoom dynamique (jusqu’à 20 %)
+Des retournements horizontaux et verticaux.
+Figure 14 :  Normalisation et Augmentation des données
+Ces techniques permettent de simuler une variabilité naturelle des échantillons histopathologiques et d’améliorer la capacité de généralisation des modèles.
+3.3 Conception des modèles 
+L’objectif de cette section est de présenter les différentes architectures testées dans le cadre de ce projet. Chaque modèle a été entraîné et évalué de manière indépendante, afin de comparer leurs performances sur la tâche de classification binaire d’images histopathologiques du sein (tissu sain vs tissu tumoral).
+3.3.1 Modèles d’apprentissage automatique 
+ Modèle CNN personnalisée 
+Dans une première phase expérimentale, un modèle convolutif a été conçu manuellement afin d’établir une base de référence. Ce réseau de neurones convolutionnel (CNN) repose sur une architecture hiérarchique classique, adaptée à la classification binaire d’images médicales.
+Le modèle se compose de quatre blocs convolutionnels successifs, chacun constitué :
+Table 4 : Structure détaillée du modèle CNN personnalisé utilisé dans cette étude
+Bloc
+Nombre de filtres
+Taille du noyau
+Activation
+MaxPooling
+1
+32
+(3×3)
+ReLU
+(2×2)
+2
+64
+(3×3)
+ReLU
+(2×2)
+3
+128
+(3×3)
+ReLU
+(2×2)
+4
+128
+(3×3)
+ReLU
+(2×2)
+Une fois les caractéristiques visuelles extraites par les couches convolutionnelles, le réseau entre dans sa phase de décision. Les cartes d’activation sont d’abord aplaties grâce à une couche Flatten, pour transformer les données en un vecteur linéaire exploitable.Ce vecteur passe ensuite par une couche de Dropout, qui désactive 50 % des connexions à chaque itération une technique simple mais efficace pour éviter que le modèle ne mémorise trop.On enchaîne ensuite avec une couche dense composée de 512 neurones, qui applique une activation ReLU pour faire émerger les combinaisons les plus pertinentes.Enfin, la couche de sortie une seule unité activée par sigmoid permet de produire une probabilité binaire claire.
+Rôle des différentes couches :
+Conv2D : extrait des motifs visuels locaux (formes, bords, textures).
+MaxPooling2D : réduit la dimensionnalité, limite les calculs et retient l’information la plus saillante.
+Flatten : transforme les cartes 2D en vecteur utilisable par les couches denses.
+Dropout : empêche l’overfitting en forçant l’apprentissage de représentations généralisables.
+Dense(512) : permet des combinaisons non linéaires complexes entre les features.
+Dense(1, sigmoid) : produit une probabilité continue pour la classification binaire.
+Entraînement et hyperparamètres :
+L’entraînement du modèle CNN a été organisé en deux phases successives, avec l’objectif d’obtenir à la fois une convergence stable et une bonne capacité de généralisation.Lors de la phase initiale, le réseau a été entraîné sur 30 époques complètes, avec des lots de 32 images pour l’apprentissage et 16 images pour la validation.Le taux d’apprentissage a été fixé à 1e-4, ce qui permettait au modèle d’évoluer par petits pas maîtrisés, en affinant progressivement ses poids sans sauts brusques.
+Le choix de l’optimiseur Adam s’est imposé naturellement. Ce dernier combine les avantages de deux méthodes classiques : RMSprop et la descente de gradient avec momentum.Il adapte dynamiquement le taux d’apprentissage pour chaque poids du réseau, ce qui le rend particulièrement efficace, surtout dans le cadre d’architectures profondes ou bruitées, comme c’est souvent le cas en imagerie médicale.
+Fonction de perte Binary Crossentropy :
+La fonction de perte adoptée est la binary cross-entropy, couramment utilisée pour les problèmes de classification binaire. Elle mesure l’écart entre la probabilité prédite par le modèle (sortie sigmoïde entre 0 et 1) et la classe réelle (0 ou 1) [24].
+La formule mathématique est la suivante :
+Loss = −1/N​i=1∑N​[ yi * log (pi) + (1−yi) * log (1−pi) ]
+où :
+Yi : est la vraie étiquette (0 ou 1)
+Pi :  est la probabilité prédite
+N: est le nombre total d’exemples
+Plus la prédiction est éloignée de la vérité, plus la perte est élevée.
+Après cette première phase d’apprentissage, l’entraînement s’est poursuivi jusqu’à la 70e époque, toujours dans le même environnement de paramètres.L’objectif de cette seconde étape était clair : affiner les poids du modèle pour améliorer encore sa précision, sans toucher aux hyperparamètres initiaux.Cette approche progressive a permis au réseau de consolider ce qu’il avait déjà appris, tout en gagnant en stabilité et en capacité de généralisation.
+Mécanismes de régularisation :
+Pour rendre l’entraînement plus robuste et éviter le surapprentissage, deux mécanismes de régularisation ont été intégrés au processus.D’une part, la fonction ModelCheckpoint permet de sauvegarder automatiquement les meilleurs poids du modèle, dès qu’une amélioration est détectée sur l’ensemble de validation.D’autre part, le callback EarlyStopping interrompt l’apprentissage si la perte de validation (val_loss) stagne au-delà de huit époques consécutives, évitant ainsi que le modèle ne s’ajuste trop aux données d’entraînement.Grâce à ces précautions, ce CNN  pourtant simple dans sa conception a pu être entraîné de manière rigoureuse, et a servi de référence comparative solide face aux modèles plus complexes issus du transfert d’apprentissage.
+Modèle BLSTM (Bidirectional LSTM) 
+Dans une volonté d’explorer des architectures alternatives aux réseaux convolutifs, un modèle basé sur des LSTM bidirectionnels (BLSTM) a été implémenté. Bien que traditionnellement utilisés pour le traitement des séquences temporelles, les LSTM peuvent également être appliqués à des données visuelles lorsqu’elles sont converties en séquences linéaires.
+Le pipeline adopté consiste à aplatir les images d’entrée (224×224×3), puis à les reformater en séquences de 224 pas de temps, chaque pas contenant un vecteur de 672 caractéristiques (224×3). Cette transformation permet au réseau BLSTM de traiter l’image comme une séquence de colonnes de pixels, capturant les dépendances spatiales sur deux axes grâce à la bidirectionnalité.
+L’architecture du modèle est structurée comme suit :
+Deux couches Bidirectional LSTM empilées (64 unités chacune), la première avec return_sequences=True pour conserver l’information temporelle complète.
+Une couche de Dropout (0.5) pour éviter le surapprentissage.
+Une couche Dense (128, ReLU) pour assurer une non-linéarité profonde.
+Une sortie Dense (1, sigmoïde) pour la classification binaire.
+Le modèle a été entraîné sur 60 époques, avec l’optimiseur Adam (learning_rate=1e-4), la fonction de perte binary_crossentropy, et les callbacks EarlyStopping et ModelCheckpoint activés. Cette approche, bien que moins conventionnelle dans le domaine de la vision, offre un angle expérimental pertinent pour mesurer la capacité des réseaux récurrents à traiter des images médicales après réorganisation spatiale.
+3.3.2 Modèles par transfert de connaissances
+Dans le but d’améliorer les performances et de tirer profit des connaissances acquises sur de grands ensembles d’images, plusieurs modèles pré-entraînés ont été intégrés à ce projet via une approche de transfer learning. Ces architectures, initialement entraînées sur la base ImageNet, permettent de réutiliser des couches convolutionnelles efficaces pour l’extraction automatique de caractéristiques visuelles.
+Chaque modèle a été adapté à la tâche de classification binaire (bénin vs. malin) à travers l’ajout d’un classificateur personnalisé, sans modifier les poids internes des couches pré-entraînées lors de la première phase d'entraînement (feature extraction).
+Modèle VGG19 
+Dans le cadre de ce projet, le modèle VGG19 a été utilisé comme architecture pré-entraînée, intégrée selon une approche de feature extraction. Ce réseau profond, réputé pour sa simplicité structurée et sa performance sur le benchmark ImageNet, est composé de 19 couches (16 convolutionnelles et 3 entièrement connectées à l’origine), organisées en blocs successifs.
+Les couches convolutionnelles de VGG19 appliquent des filtres de petite taille (3×3), permettant de détecter progressivement des motifs visuels de plus en plus complexes. À chaque passage d'une image à travers ces couches, le réseau génère ce qu'on appelle des cartes d'activation, qui représentent les réponses locales du réseau aux motifs détectés dans l’image (par exemple : bordures, textures, anomalies cellulaires). Ces cartes forment une représentation visuelle hiérarchique de l’image, utilisée pour alimenter la phase de classification.
+Dans cette expérimentation, le corps du modèle a été gelé (non entraîné), afin de préserver les connaissances préalables apprises sur ImageNet. En sortie, un classificateur personnalisé a été ajouté, composé d’une couche de GlobalAveragePooling2D (pour réduire la dimensionnalité tout en conservant l’essentiel de l’information), suivie d’un Dropout (taux 0.5) pour limiter le surapprentissage, puis d’une couche Dense à sortie sigmoïde pour effectuer la classification binaire (bénin vs. malin).
+L'entraînement a été effectué sur 20 époques avec un taux d’apprentissage de 0.0001, à l’aide de l’optimiseur Adam. Les performances ont été évaluées sur le jeu de test à l’aide des métriques standards (accuracy, précision, rappel, F1-score).
+Modèle ResNet50V2 
+Parmi les architectures explorées dans ce travail, ResNet50V2 constitue un choix stratégique de par sa profondeur et son mécanisme d'apprentissage résiduel. Contrairement aux modèles classiques, ResNet introduit des connexions de saut (skip connections), permettant de contourner certaines couches lors de l'entraînement. Ce mécanisme facilite la circulation du gradient, limite la dégradation des performances sur les réseaux profonds et accélère la convergence.
+Dans ce projet, le modèle pré-entraîné ResNet50V2 a été utilisé en transfer learning, en adoptant une stratégie en deux phases :
+Phase d’extraction de caractéristiques  :
+Lors de la première phase d'entraînement, le modèle ResNet50V2 a été utilisé comme extracteur de caractéristiques. Concrètement, cela signifie que l’ensemble des couches convolutionnelles du réseau  autrement dit, le "corps" du modèle a été gelé (trainable = False), afin de conserver les poids préalablement appris sur la base ImageNet.Sur cette base figée, un classificateur personnalisé a été greffé. Il se compose d’une couche GlobalAveragePooling2D pour condenser les cartes d’activation, suivie d’une couche de régularisation Dropout (0,2) visant à limiter le surapprentissage, puis d’une couche finale Dense(1, activation='sigmoid'), chargée d’effectuer la classification binaire entre tissu sain et tissu tumoral.L'entraînement de cette architecture s’est déroulé sur 30 époques, avec un taux d’apprentissage de 1e-4. La fonction de perte utilisée était la binary crossentropy, particulièrement adaptée à ce type de tâche.
+Phase de fine-tuning :Une fois la convergence stabilisée, les 30 dernières couches du modèle ont été dégelées pour affiner les performances sur les données spécifiques à notre tâche. Cette phase de raffinement a été effectuée avec un taux d’apprentissage plus faible (1e-5), toujours à l’aide de l’optimiseur Adam, afin de ne pas perturber les poids déjà optimisés.
+Deux callbacks ont été utilisés tout au long du processus :
+ModelCheckpoint pour sauvegarder automatiquement le meilleur modèle,
+EarlyStopping pour interrompre l’entraînement si la performance sur la validation n’évoluait plus après 10 époques.
+Cette approche progressive a permis à ResNet50V2 de tirer parti de ses capacités d’abstraction tout en s’adaptant efficacement au domaine médical spécifique des images histopathologiques.
+DenseNet121 & EfficientNetB0 
+Deux autres modèles pré-entraînés ont été exploités dans ce projet : DenseNet121 et EfficientNetB0, tous deux reconnus pour leur efficacité en classification d’images médicales. L’approche adoptée repose sur le transfer learning sans fine-tuning, c’est-à-dire que le backbone convolutif pré-entraîné est gelé, et seule une tête de classification légère est ajoutée. Cette tête comprend une couche GlobalAveragePooling2D pour condenser les cartes d’activation, suivie d’un Dropout de 50 % pour limiter le surapprentissage, et d’une couche Dense avec activation sigmoïde pour produire une prédiction binaire.
+DenseNet121 se distingue par sa structure dense entre les couches, facilitant la réutilisation des gradients et réduisant le nombre de paramètres. EfficientNetB0, de son côté, repose sur une stratégie d’optimisation multi-dimensionnelle (profondeur, largeur, résolution) qui permet d’obtenir d’excellentes performances avec un coût computationnel réduit. Ces deux modèles ont été intégrés de manière identique dans le pipeline expérimental, avec des hyperparamètres constants afin de permettre une comparaison équitable avec les autres architectures testées.
+3.4 Stratégie d’évaluation
+L’évaluation des performances des modèles constitue une étape cruciale dans tout processus de classification supervisée, en particulier dans le domaine médical où la fiabilité du diagnostic algorithmique peut avoir un impact direct sur la prise en charge clinique. Afin de garantir une évaluation rigoureuse et représentative, plusieurs principes ont été adoptés dans ce travail.
+Tout d’abord, une stratégie de séparation stricte entre les ensembles d’entraînement, de validation et de test a été mise en place. L’ensemble de test n’a été utilisé qu’en phase finale, pour mesurer la capacité du modèle à généraliser sur des données totalement inédites. Les jeux d’entraînement et de validation ont quant à eux permis de piloter l’entraînement et d’éviter le surapprentissage par validation croisée implicite.
+Les modèles ont été évalués à l’aide d’un ensemble cohérent de métriques bien adaptées aux problématiques de classification binaire déséquilibrée :
+Accuracy (exactitude) : proportion globale de prédictions correctes.
+Précision (precision) : proportion de vraies tumeurs parmi les échantillons prédits comme malins.
+Rappel (recall) ou sensibilité : capacité à détecter toutes les tumeurs réellement présentes.
+F1-score : moyenne harmonique entre précision et rappel, plus robuste en cas de déséquilibre.
+Matrice de confusion : pour visualiser les erreurs de classification (faux positifs, faux négatifs).
+Log Loss : pour quantifier la qualité de la probabilité prédite.
+Courbes ROC et AUC : pour analyser la performance globale à différents seuils de classification.
+Cette combinaison de métriques permet non seulement de quantifier la performance globale, mais aussi d’analyser finement les erreurs, en particulier les faux négatifs, qui peuvent être critiques dans le contexte du dépistage du cancer.
+Conclusion
+Ce chapitre a détaillé l’ensemble des choix méthodologiques ayant guidé la mise en œuvre du projet, depuis la sélection et la préparation des données jusqu’à l’architecture des modèles et leur stratégie d’évaluation. L’utilisation conjointe d’un modèle CNN conçu manuellement et de plusieurs réseaux pré-entraînés a permis d’explorer différentes approches pour la classification binaire de tissus mammaires. Un soin particulier a été accordé à la qualité des données, à la régularisation des modèles et à la rigueur de l’évaluation. Ces fondations solides permettent, dans le chapitre suivant, d’examiner les résultats obtenus, d’en tirer des analyses critiques, et de les confronter aux performances observées dans la littérature.
+Chapitre 4. Expérimentations et résultats
+Introduction 
+Dans ce chapitre, nous présentons le processus expérimental ainsi que les résultats obtenus à travers la mise en œuvre des différentes approches proposées. L’objectif est d’évaluer les performances des modèles dans des conditions proches des scénarios réels, en les appliquant aux jeux de données sélectionnés et en analysant les prédictions à l’aide de métriques prédéfinies.
+Implémentation technique 
+Environnement matériel et logiciel 
+Afin de garantir la reproductibilité et la fiabilité des expérimentations, toutes les phases de développement, d’entraînement et de validation ont été réalisées dans un environnement maîtrisé, en combinant des ressources matérielles standards avec des plateformes de calcul compatibles avec l’apprentissage profond.
+Environnement matériel 
+Les expérimentations ont été réalisées principalement en local sur un ordinateur personnel avec la configuration suivante :
+Nom de l’appareil : DESKTOP-EILCEGG
+Processeur : Intel Core i5-1135G7 (11ᵉ génération) 
+Mémoire RAM : 8 Go
+Système d’exploitation : Windows 10 – 64 bits
+Architecture : Processeur x64
+GPU intégré : Intel Iris Xe Graphics
+Cette configuration locale a permis d’entraîner efficacement des modèles légers tels que le CNN personnalisé et le BLSTM. Grâce à une RAM de 8 Go et un processeur de 11ᵉ génération, le traitement des images, le prétraitement des données et l’apprentissage supervisé ont pu être réalisés sans recours à des serveurs distants ni à des ressources cloud.
+Environnement logiciel 
+Le développement du projet a été mené dans un environnement Python local, intégrant une série d’outils puissants et de bibliothèques adaptées à l’apprentissage automatique et à la manipulation de données. 
+Outils utilisés 
+Python :  Python est le langage informatique le plus populaire pour le traitement Big Data, l’exécution de calculs mathématiques ou le Machine Learning. De manière générale, il s’agit du langage de prédilection pour la Data Science [25].
+Figure 15: Official logo of the Python programming language [26]
+Anaconda: Anaconda est une distribution open-source des langages de programmation Python et R, qui sont utilisés pour les applications de science des données, d'apprentissage automatique et d'intelligence artificielle.
+Il comprend plus de 250 paquets de science des données populaires et des outils de gestion pour simplifier l'installation et le déploiement des paquets [27].
+Figure 16: Anaconda Logo
+Jupyter: Jupyter Notebook est un environnement interactif open-source qui permet de combiner du code exécutable, des visualisations et du texte explicatif au sein d’un même document, ce qui en fait un outil privilégié pour l’analyse de données, l’enseignement et la recherche scientifique [28].
+Figure 17 : Jupyter Notebook Logo
+Kaggle: Kaggle est une plateforme en ligne dédiée aux professionnels de la science des données et du machine learning. Elle propose des compétitions, des jeux de données, des notebooks interactifs, ainsi qu’une communauté active pour partager des solutions et progresser dans l’analyse de données et le développement de modèles prédictifs [29] .
+Figure 18:  kaggle logo
+Bibliothèques principales 
+Pandas : Pandas est une bibliothèque open-source du langage Python spécialement conçue pour la manipulation et l’analyse de données. Elle fournit des structures de données flexibles et puissantes, comme les DataFrames, qui facilitent le nettoyage, la transformation, l’exploration et la visualisation de données tabulaires [30].
+Numpy:  NumPy est une bibliothèque fondamentale pour le calcul scientifique en Python. Elle permet la manipulation efficace de tableaux multidimensionnels et offre un large éventail de fonctions mathématiques pour le traitement de données numériques, l’algèbre linéaire et les statistiques [31].
+Scikit-learn : Scikit-learn est une bibliothèque Python dédiée à l’apprentissage automatique. Elle propose des outils simples et efficaces pour l’analyse prédictive, la classification, la régression, la réduction de dimension, le clustering et l’évaluation de modèles [32].
+Figure 19: Scikit-learn Logo
+TensorFlow / Keras : TensorFlow est un framework open-source développé par Google pour le calcul numérique et le deep learning. Keras, intégré à TensorFlow, offre une API haut niveau intuitive pour construire, entraîner et évaluer rapidement des réseaux de neurones profonds [33].
+Figure 20 : Tensorflow et Keras logo
+Matplotlib / Seaborn :
+Matplotlib est une bibliothèque de visualisation 2D en Python qui permet de générer des graphiques statiques, animés ou interactifs. Seaborn, construite sur Matplotlib, offre une interface plus simple et des thèmes esthétiques adaptés à l’analyse statistique des données[34].
+Figure 21: Seaborn et Matplotlib Logo
+Open CV (Open Source Computer Vision Library): 
+Open CV est une bibliothèque libre et open source spécialisée dans le traitement d’images et la vision par ordinateur. Elle a été initialement développée par Intel et est largement utilisée pour effectuer des tâches telles que la détection d’objets, la reconnaissance faciale, le suivi de mouvement, la segmentation d’images et le traitement vidéo en temps réel. Grâce à sa compatibilité avec les langages Python, C++ et Java, OpenCV permet une manipulation rapide des images et l’extraction automatisée de caractéristiques visuelles à des fins de classification ou d’analyse[35].
+Évaluation des performances 
+4.2.1 Les concepts essentiels pour comprendre la performance des modèles
+Afin de juger de l’efficacité des modèles de classification mis en œuvre dans ce projet, plusieurs métriques d’évaluation standards ont été utilisées. Chacune offre un éclairage spécifique sur les performances, en particulier dans des contextes de déséquilibre entre classes, fréquents en imagerie médicale.
+Accuracy (Exactitude) :
+L’accuracy mesure la proportion de prédictions correctes effectuées par le modèle sur l’ensemble des classes [36].
+Formule :   Accuracy = TP +TN /(TP+TN+FP+FN)
+Où :TP = Vrais positifsTN = Vrais négatifsFP = Faux positifsFN = Faux négatifs
+ F1-Score :
+ Le F1-score est la moyenne harmonique entre la précision et le rappel (recall). Il offre une métrique unique qui équilibre les deux [36].
+Formule :   F1 = 2 * ((Precision * Recall) / (Precision + Recall))
+Particulièrement adapté aux jeux de données déséquilibrés, le F1-score permet de quantifier la performance globale tout en tenant compte à la fois des faux positifs et des faux négatifs.
+ Recall (Sensibilité) :
+ Le rappel mesure la capacité du modèle à identifier correctement toutes les instances positives réelles.Essentiel dans les contextes médicaux, où il est crucial de réduire les faux négatifs (ne pas passer à côté d’un cas positif)[36].
+Formule :     Recall = TP / (TP+FN)
+Précision (Precision) :
+ La précision indique la proportion de prédictions positives qui sont effectivement correctes.
+Formule :    Precision = TP / (TP + FP )
+La précision est fondamentale dans les cas où les faux positifs doivent être minimisés, comme en diagnostic médical [36].
+ Matrice de confusion :
+La matrice de confusion est un tableau récapitulatif qui illustre la performance d’un modèle de classification, en comparant les prédictions aux véritables étiquettes.
+Table 5: Matrice de confusion
+ 
+Prédit : Positif
+Prédit : Négatif
+Réel : Positif
+TP (Vrai Positif)
+FN (Faux Négatif)
+Réel : Négatif
+FP (Faux Positif)
+TN (Vrai Négatif)
+Elle offre une vue détaillée des types d’erreurs commises (faux positifs, faux négatifs), et permet une meilleure compréhension des limites du modèle [36].
+4.2.2 Métriques d’évaluation 
+L’évaluation des performances du modèle dans ce travail s’est déroulée en deux étapes complémentaires. Tout d’abord, la fonction model.evaluate(test_gen) a été utilisée pour obtenir une première estimation globale de la performance du modèle. Cette méthode renvoie la perte (loss) et l’accuracy sur l’ensemble de test, fournissant ainsi un aperçu rapide de la capacité du modèle à généraliser sur des données inédites.
+Figure 22: Évaluation directe du modèle avec model.evaluate
+Dans une seconde étape, une évaluation plus fine du modèle a été menée. Les probabilités de sortie (y_pred_probs) générées par le modèle ont été converties en classes binaires (y_pred) en appliquant un seuil de 0,5. Ces prédictions ont ensuite été confrontées aux étiquettes réelles (y_true), extraites à partir de test_gen.classes.
+À partir de cette comparaison, les principales métriques d’évaluation ont été calculées à l’aide de sklearn.metrics, permettant d’obtenir une vision complète du comportement du modèle sur des données inédites. Cette analyse a été complétée par une matrice de confusion affichée sous forme de heatmap grâce à seaborn, afin de visualiser clairement les zones de performance et les erreurs de classification.
+Cette évaluation détaillée a permis d’identifier les points forts et les limites du modèle, en particulier dans le contexte critique du diagnostic médical, où l’équilibre entre faux positifs et faux négatifs est déterminant.
+Figure 23 : Code Python utilisé pour l’évaluation avancée et la visualisation des performances du modèle
+Résultats obtenus  
+Réseau de Neurones Convolutif CNN
+Afin d’évaluer la capacité de généralisation de notre modèle CNN, nous avons procédé à un entraînement en deux phases, combinant un premier ajustement initial suivi d’un affinement ("fine-tuning"). L’apprentissage s’est effectué sur 70 époques au total, avec une stratégie de sauvegarde du meilleur modèle via un système de ModelCheckpoint et une surveillance de la perte de validation à l’aide d’un EarlyStopping.
+L’évolution des courbes d’accuracy et de loss au cours des époques a révélé une progression stable, avec une amélioration notable à partir de la 10e époque. Le modèle a atteint une exactitude de 96,94 % sur les données de test, ce qui témoigne d’une bonne convergence et d’un pouvoir prédictif élevé.
+Table 6: Résultats de performance du modèle CNN
+Métrique
+Classe bénigne
+Classe maligne
+Moyenne pondérée
+Précision
+1.00
+0.95
+0.97
+Rappel
+0.93
+1.00
+0.97
+F1-Score
+0.96
+0.97
+0.97
+Exactitude (Accuracy)
+–
+–
+96,94 %
+La matrice de confusion obtenue illustre clairement ces résultats, avec seulement quelques erreurs de classification dans la classe bénigne (7 faux négatifs sur 100 cas), tandis que la classe maligne a été prédite correctement dans sa totalité (129/129).
+Figure 24 : Matrice de Confusion du CNN
+Afin de mieux cerner le comportement du modèle au fil de l'entraînement, nous avons combiné les historiques des deux phases d'apprentissage et tracé les courbes de performance (accuracy et loss). Ces visualisations mettent en évidence une amélioration continue de la précision, atteignant un plateau au-delà de la 40 époque. La perte de validation s’est stabilisée autour de 0,15, traduisant une généralisation efficace sans surapprentissage apparent.
+Figure 25: Courbe de précision et de perte d'entraînement/validation
+Enfin, afin de tester le modèle sur des cas individuels en dehors du jeu de test, une fonction de prédiction a été développée. Cette fonction charge une image histopathologique, la redimensionne et la normalise avant de l’envoyer au modèle sauvegardé (CNN_classifier.keras). Le modèle renvoie alors une prédiction binaire, accompagnée d’un pourcentage de confiance.
+Ce test ponctuel sur des images spécifiques a permis de vérifier le bon fonctionnement du modèle dans un contexte d’usage réel simulé, confirmant sa capacité à traiter de nouvelles images de manière autonome et intuitive.
+Figure 26: Image test prédite comme bénigne
+DenseNet121  
+Pour renforcer la robustesse de notre approche, nous avons exploré l’usage d’un modèle de type transfer learning, en mobilisant l’architecture DenseNet121 pré-entraînée sur ImageNet. Les couches convolutionnelles du modèle ont été gelées afin de ne conserver que les représentations apprises, tout en ajoutant une tête de classification adaptée à notre tâche binaire.
+L’entraînement s’est effectué sur 50 époques avec arrêt anticipé (EarlyStopping) et sauvegarde du meilleur modèle via ModelCheckpoint. Le taux d’apprentissage a été fixé à 0.0001.
+À l’issue de l’entraînement, le modèle a atteint une exactitude de 93,01 % sur l’ensemble de test, avec une perte de validation finale de 0,2506, ce qui indique une bonne généralisation sans surapprentissage apparent.
+Table 7: Résultats de performance du modèle DenseNet121
+Métrique
+Classe bénigne
+Classe maligne
+Moyenne pondérée
+Précision
+0.93
+0.93
+0.93
+Rappel
+0.91
+0.95
+0.93
+F1-Score
+0.92
+0.94
+0.93
+Exactitude
+–
+–
+93,01 %
+La matrice de confusion associée révèle 9 faux négatifs dans la classe bénigne et 7 faux positifs dans la classe maligne, soit 16 erreurs de classification au total sur 229 échantillons. Le modèle parvient donc à bien différencier les deux catégories, avec une sensibilité légèrement supérieure pour la détection des cas malins (recall = 0.95).
+Figure 27: Matrice de confusion du modèle DenseNet121
+ResNet50V2 
+Dans cette expérimentation, nous avons mobilisé le modèle ResNet50V2 pré-entraîné sur ImageNet, en l’utilisant comme extracteur de caractéristiques. Les couches de classification d’origine ont été retirées et remplacées par une architecture personnalisée composée d’un GlobalAveragePooling2D, d’un Dropout à 20 %, et d’une couche Dense finale avec activation sigmoïde. Le modèle de base a été gelé afin de préserver les poids appris lors du pré-entraînement.
+L’entraînement a été réalisé sur 100 époques, avec sauvegarde du meilleur modèle en fonction de la perte de validation grâce à ModelCheckpoint. Aucun fine-tuning n’a été appliqué dans cette première version. L’optimiseur Adam et la fonction de perte binaire ont permis de converger rapidement vers un modèle stable.
+L’évaluation sur les données de test a montré une exactitude globale de 93,01 %, avec un bon équilibre entre précision et rappel pour les deux classes.
+Table 8: Résultats de performance du modèle ResNet50V2
+Métrique
+Classe bénigne
+Classe maligne
+Moyenne pondérée
+Précision
+0,91
+0,94
+0,93
+Rappel
+0,92
+0,93
+0,93
+F1-Score
+0,92
+0,93
+0,93
+Accuracy
+–
+–
+93,01 %
+La matrice de confusion ci-dessous montre que 92 images bénignes ont été correctement classées sur 100, contre 120 images malignes sur 129. Le modèle affiche ainsi une sensibilité correcte pour les deux classes, avec peu de faux positifs et faux négatifs.
+Figure 28 : Matrice de confusion ResNet50V2
+VGG19
+L’expérimentation suivante visait à  évaluer l’architecture VGG19, connue pour sa profondeur et sa capacité à extraire des caractéristiques visuelles hiérarchiques. Le modèle a été utilisé avec des poids pré-entraînés sur ImageNet, et les couches supérieures ont été adaptées pour la classification binaire à l’aide d’un GlobalAveragePooling2D, suivi d’un Dropout de 50 % et d’une couche de sortie sigmoïde.
+L’apprentissage s’est effectué sur 20 époques, sans ajustement des poids du modèle de base (fine-tuning), et avec sauvegarde du meilleur modèle selon la perte de validation. Bien que les courbes d’entraînement aient montré une progression régulière, les performances obtenues sur l’ensemble de test ont révélé certaines limites.
+Table 9: Résultats de performance du modèle VGG19
+Métrique
+Classe bénigne
+Classe maligne
+Moyenne pondérée
+Précision
+0,84
+0,66
+0,74
+Rappel
+0,38
+0,95
+0,7
+F1-Score
+0,52
+0,78
+0,67
+Accuracy
+–
+–
+70,30 %
+Ces résultats mettent en évidence une forte sensibilité du modèle à la classe maligne, ce qui est pertinent dans un contexte médical afin de minimiser les faux négatifs. Toutefois, cette efficacité se fait au détriment de la classe bénigne, dont le rappel chute à 0,38, indiquant un nombre important de faux positifs.
+La matrice de confusion ci-dessous reflète ce déséquilibre : seuls 38 échantillons bénins sur 100 ont été correctement prédits, contre 122 échantillons malins sur 129.
+Figure 29: Matrice de confusion VGG19
+ EfficientNetB0 
+Dans le but de tester une architecture récente et optimisée, nous avons implémenté EfficientNetB0, un modèle pré-entraîné sur ImageNet et réputé pour son bon compromis entre performance et légèreté. Comme pour les précédentes expériences, seule la tête du modèle a été adaptée à la classification binaire à l’aide d’un GlobalAveragePooling, d’un Dropout de 50 % et d’une couche finale sigmoïde. Les couches convolutives du modèle de base ont été figées durant l’entraînement (pas de fine-tuning).
+L'entraînement s’est déroulé sur 50 époques avec surveillance de la perte de validation (EarlyStopping) et enregistrement du meilleur modèle via ModelCheckpoint. Toutefois, contrairement aux autres modèles testés, les performances de l’EfficientNetB0 sur notre jeu de données se sont révélées très décevantes.
+Table 10: Résultats de performance du modèle EfficientNetB0
+Métrique
+Classe bénigne
+Classe maligne
+Moyenne pondérée
+Précision
+0.00
+0.56
+0.32
+Rappel
+0.00
+1.00
+0.56
+F1-Score
+0.00
+0.72
+0.41
+Accuracy
+–
+–
+56,33 %
+L’analyse du rapport de classification révèle que le modèle a échoué à détecter correctement tous les cas bénins (rappel = 0.00). Il a en revanche classé tous les cas malins (129/129) dans leur catégorie, au prix d’un grand nombre de faux positifs.
+Ce comportement est confirmé par la matrice de confusion, qui montre 100 faux positifs et aucune prédiction correcte pour les échantillons bénins.
+Figure 30 : Matrice de confusion EfficientNetB0
+BiLSTM 
+Afin d'explorer l'efficacité des réseaux récurrents dans le traitement des images histopathologiques, nous avons implémenté un modèle reposant uniquement sur des couches BiLSTM. L'objectif était d’évaluer leur capacité à exploiter les structures séquentielles issues du réagencement des pixels d'image sous forme de séries temporelles. L’architecture a été entraînée durant 60 époques, avec une régularisation par Dropout (0,5) et un mécanisme d’arrêt anticipé (EarlyStopping) pour éviter le surapprentissage.
+Table 11: Résultats de performance du modèle BiLSTM
+Métrique
+Classe bénigne
+Classe maligne
+Moyenne pondérée
+Précision
+0,79
+0,85
+0,82
+Rappel
+0,81
+0,83
+0,82
+F1-Score
+0,8
+0,84
+0,82
+Accuracy
+–
+–
+82,10 %
+La matrice de confusion révèle que 81 images bénignes sur 100 ont été correctement identifiées, et 107 images malignes sur 129 ont été correctement classées. Bien que les performances soient légèrement inférieures à celles obtenues avec des architectures convolutives, ce modèle démontre une bonne capacité de généralisation, en particulier dans la détection des cas malins.
+Figure 31 : Matrice de confusion du modèle BiLSTM
+Analyse des résultats et discussion 
+Comparaison des modèles implémentés 
+Afin d’identifier l’architecture la plus performante pour la classification des images histopathologiques en deux classes (bénigne vs maligne), plusieurs modèles ont été entraînés et évalués selon le même pipeline de traitement. Le tableau ci-dessous résume les résultats obtenus :
+Table 12: Résumé comparatif des performances des modèles entraînés
+Modèle
+Accuracy
+Précision
+Rappel
+F1-score
+CNN personnalisé
+96,94 %
+0,97
+0,97
+0,97
+DenseNet121
+93,01 %
+0,93
+0,93
+0,93
+ResNet50V2
+93,01 %
+0,93
+0,93
+0,93
+BiLSTM
+82,10 %
+0,82
+0,82
+0,82
+VGG19
+70,30 %
+0,74
+0,7
+0,67
+EfficientNetB0
+56,33 %
+0,32
+0,56
+0,41
+Figure 32 : Performance des modèles entraines
+D’après ces résultats, le CNN entraîné localement et affiné sur 70 époques s’impose comme le modèle le plus performant, tant en précision qu’en robustesse. Il dépasse les architectures pré-entraînées mobilisées dans le cadre du transfert d’apprentissage, mettant en lumière l’efficacité d’un entraînement sur mesure adapté au jeu de données.
+En complément de ces métriques classiques, une évaluation supplémentaire a été conduite à l’aide du log loss (perte logarithmique), une métrique qui mesure la qualité des probabilités prédites par le modèle. Contrairement à l’accuracy qui évalue simplement si une classe est correctement prédite ou non, le log loss pénalise davantage les prédictions trop incertaines ou mal calibrées. Une valeur de log loss plus faible indique donc un meilleur niveau de confiance dans les prédictions du modèle.
+Figure 33 : Comparaison des modèles selon la métrique Log Loss
+Comme l’illustre la figure ci-dessus, le CNN personnalisé obtient le log loss le plus bas (0,17), confirmant sa capacité non seulement à prédire correctement, mais aussi à produire des probabilités fiables et bien calibrées. À l’inverse, VGG19 et EfficientNetB0 affichent des log loss largement plus élevés (> 0,6), révélant une instabilité dans leurs prédictions, même lorsqu’une bonne performance brute peut parfois être observée sur certains scores (comme le rappel pour la classe maligne).
+Cette lecture complémentaire renforce l'idée que la qualité d’un modèle ne repose pas uniquement sur son taux de bonnes prédictions, mais également sur la cohérence et la confiance de ses estimations, ce qui est essentiel dans un contexte médical où chaque décision doit être justifiée avec rigueur.
+Interprétation des performances 
+ Le CNN personnalisé a montré une excellente capacité de généralisation, avec des erreurs très limitées (seulement 7 faux négatifs sur 229 échantillons). Cela s’explique par une architecture bien adaptée au dataset et un entraînement progressif maîtrisé.
+ DenseNet121 et ResNet50V2, malgré leur profondeur et leurs représentations hiérarchiques puissantes, n’ont pas surpassé le modèle CNN. Cela pourrait être lié à un manque de fine-tuning ou à une inadéquation partielle avec la distribution des données.
+ Le BiLSTM, bien que basé sur une approche récurrente atypique pour les images, a offert des résultats honorables. Il démontre que des structures séquentielles peuvent extraire un signal pertinent même à partir de données visuelles.
+ VGG19 a montré une forte sensibilité à la classe maligne (recall = 0.95) mais au prix d’un grand nombre de faux positifs dans la classe bénigne. Ce déséquilibre réduit sa fiabilité clinique.
+EfficientNetB0, malgré sa réputation, a échoué à détecter les cas bénins, indiquant un fort biais et une mauvaise convergence.
+Analyse des erreurs 
+L’étude des matrices de confusion a permis d’identifier deux tendances :
+Les faux positifs (classe maligne prédite à tort) sont fréquents dans VGG19 et EfficientNetB0, ce qui risque d’induire des diagnostics erronés.
+Les faux négatifs, bien que rares dans CNN, existent dans BiLSTM et VGG19, ce qui est problématique pour une application clinique où la priorité est de ne pas rater un cancer.
+Les modèles CNN et ResNet50V2 affichent un bon équilibre entre ces deux erreurs, ce qui en fait des solutions plus sûres dans un cadre appliqué.
+Impact des choix méthodologiques 
+Plusieurs décisions techniques ont contribué à la fiabilité globale des résultats :
+Prétraitement homogène, normalisation des images, et batch équilibré ont contribué à une évaluation équitable entre les modèles.
+Le choix du binaire cross-entropy comme fonction de perte, combiné à l’optimiseur Adam avec un faible taux d’apprentissage, a permis d’éviter le surapprentissage dans presque toutes les architectures.
+L’utilisation systématique de ModelCheckpoint et EarlyStopping a également renforcé la stabilité des entraînements.
+En conclusion, le CNN entraîné manuellement sur le dataset IDC constitue une solution simple, légère et particulièrement efficace pour cette tâche de classification binaire. Les modèles plus complexes (DenseNet, ResNet) n’ont pas apporté d’amélioration significative, tandis que EfficientNetB0 s’est révélé inadapté à nos contraintes.
+Cette évaluation comparative souligne l’importance d’un entraînement adapté au contexte spécifique des images histopathologiques, bien plus que la complexité théorique du modèle.
+Limites du projet 
+Malgré ses performances remarquables, notre approche basée sur un CNN personnalisé présente plusieurs limitations structurelles et méthodologiques.
+La première contrainte majeure réside dans la taille relativement restreinte du dataset utilisé pour l'entraînement et l’évaluation. Un ensemble de données limité, même bien préparé, peut favoriser le surapprentissage (overfitting), où le modèle excelle sur les données vues mais peine à généraliser sur des cas réels inconnus.
+Par ailleurs, la diversité clinique des images reste limitée. Toutes les images proviennent d’une seule base (IDC), ce qui ne reflète pas nécessairement la variabilité inter-patients, les différences entre laboratoires ou les conditions d’acquisition réelles. Cette homogénéité peut biaiser le modèle en le rendant moins performant en dehors de son environnement d’entraînement.
+Enfin, l’infrastructure locale utilisée pour l’expérimentation a imposé certaines limites. Faute de ressources GPU avancées, il n’a pas été possible de tester des modèles plus profonds ou des stratégies avancées comme le fine-tuning progressif, la validation croisée, ou l’augmentation adaptative des données en temps réel.
+Pour dépasser ces contraintes, des perspectives d’amélioration incluraient l’enrichissement du dataset, la diversification des sources d’images, l'exploration de techniques d’ensemble (ensemble learning), ainsi que le déploiement de solutions cloud pour entraîner des modèles plus sophistiqués.
+Discussion
+Comparés aux approches récentes décrites dans la littérature, les modèles développés dans ce projet, et notamment le CNN personnalisé, ont montré des performances compétitives, en particulier sur le jeu de données IDC. Avec une précision globale de 96,94 %, un rappel de 0,97 et un F1-score équilibré, ce modèle surpasse largement certaines architectures avancées pré-entraînées comme EfficientNetB0 (56,33 %) ou même VGG19 (70,30 %), tout en restant plus simple et rapide à entraîner.
+À titre de comparaison, des travaux comme ceux de Gandhi et al. (2024), basés sur le même dataset (IDC), ont atteint une précision de 98,51 % grâce à une architecture CNN optimisée et une très large base d’images (plus de 277 000 patches). Notre approche, bien que plus légère et entraînée sur un sous-ensemble réduit (~4700 images), se rapproche de ces résultats, ce qui démontre une efficacité remarquable du modèle développé malgré des ressources limitées.
+Par ailleurs, notre implémentation BiLSTM a offert un F1-score de 0,82, confirmant la capacité de cette architecture à capturer des motifs structurés même en l’absence d’une dynamique temporelle explicite dans les images. Cela rejoint les observations faites par certains auteurs (ex. Kaur et al., 2024) sur la complémentarité des approches non conventionnelles dans le traitement d’images histopathologiques.
+En revanche, EfficientNetB0, pourtant réputé pour son bon compromis entre légèreté et performance, a totalement échoué à reconnaître la classe bénigne (rappel = 0,00), illustrant que la généralisation de certains modèles pré-entraînés n’est pas garantie hors de leur contexte d’origine, en particulier sans fine-tuning.
+L’évaluation complémentaire par le log loss a permis de comparer les modèles non seulement sur leur exactitude, mais aussi sur la qualité de leur calibration probabiliste. Un log loss plus faible, comme observé pour le CNN (0.13), traduit une plus grande confiance dans les prédictions correctes, tandis que les valeurs élevées obtenues pour EfficientNetB0 mettent en évidence des erreurs "fortement confiantes", donc critiques dans un contexte médical. Cette dimension probabiliste est essentielle si l'on souhaite à terme intégrer de tels outils dans des environnements cliniques où la fiabilité des scores de confiance est aussi importante que la décision binaire elle-même.
+Enfin, les écarts observés entre les performances des modèles, parfois très marqués, illustrent l’importance d’un pipeline rigoureusement maîtrisé, et non uniquement d’une architecture sophistiquée. Le CNN maison dépasse les architectures lourdes car il a été entraîné de bout en bout avec des choix méthodologiques adaptés au contexte : normalisation constante, régularisation par dropout, patience dans le fine-tuning, et évaluation sur un jeu de test distinct.
+Déploiement du modèle
+Dans une optique d’application pratique, un prototype d’interface de prédiction a été développé afin de démontrer la faisabilité d’un usage réel du modèle CNN. L’objectif était de proposer un outil léger, accessible et opérationnel permettant à un utilisateur de téléverser une image histopathologique et d’obtenir un diagnostic automatique (bénin ou malin), accompagné d’un pourcentage de confiance.
+L’application repose sur une interface web codée en Python à l’aide de la bibliothèque Streamlit, et intègre le modèle CNN_classifier.keras préalablement entraîné. L’interface permet de charger une image au format PNG ou JPEG, de l’afficher à l’écran, puis de lancer la prédiction. Le résultat est restitué sous forme d’un libellé clair ("Tissu bénin" ou "Tumeur maligne") avec une barre de progression représentant le niveau de confiance du modèle.
+Cette première version de l’application illustre concrètement le potentiel du modèle développé pour être intégré dans des outils cliniques d’aide au diagnostic. Elle peut facilement être étendue ou adaptée à d’autres types de données (IRM, mammographies, etc.) ou enrichie par des fonctionnalités supplémentaires comme l’historique des prédictions ou la génération automatique de rapports.
+Figure 34: Page d’accueil de la plateforme BCancer.AI
+Après sélection d’une image, le modèle procède à l’analyse et affiche immédiatement le résultat, accompagné d’une estimation de la confiance du modèle. Une fonctionnalité permet également de générer et télécharger un rapport PDF du diagnostic.
+Figure 35: Résultat de diagnostic automatique sur une image testée
+Cette solution constitue une première preuve de concept vers un outil de diagnostic assisté par l’IA, potentiellement intégrable dans des environnements cliniques, pédagogiques ou de recherche.
+Conclusion
+Les résultats expérimentaux de ce chapitre confirment l’efficacité du modèle CNN personnalisé, qui surpasse l’ensemble des architectures testées en termes de précision, rappel et F1-score. Malgré des performances honorables de modèles pré-entraînés comme DenseNet121 et ResNet50V2, seul le CNN montre un équilibre optimal entre complexité, légèreté et robustesse. Le BiLSTM offre une alternative originale mais moins performante, tandis que VGG19 et EfficientNetB0 présentent des limites claires. L’analyse approfondie démontre ainsi qu’un entraînement adapté au contexte spécifique des images histopathologiques reste le levier principal d’une classification fiable.
+Conclusion générale
+Dans ce travail, nous avons exploré la classification du cancer du sein à partir d’images histopathologiques en combinant différentes approches d’apprentissage profond, notamment les réseaux de neurones convolutifs (CNN) et les réseaux BiLSTM. L’étude a débuté par une revue approfondie des méthodes existantes dans la littérature, mettant en lumière les performances des architectures classiques et hybrides, ainsi que l’importance croissante de l’intelligence artificielle dans le domaine du diagnostic médical assisté par image.
+Notre démarche s’est appuyée sur un pipeline expérimental rigoureux, allant de la préparation des données jusqu’au déploiement d’une interface de prédiction. Le CNN personnalisé a été utilisé pour extraire automatiquement des caractéristiques discriminantes à partir des patchs d’images, tandis que le BiLSTM a permis d’explorer une représentation séquentielle des données afin d’évaluer la pertinence de cette approche pour des images statiques. Les résultats expérimentaux ont confirmé la supériorité du CNN, qui a surpassé les modèles prés entraînés.
+Bien que certains modèles de la littérature affichent des performances légèrement supérieures sur des datasets beaucoup plus volumineux ou enrichis par des techniques avancées d’augmentation de données, notre approche personnalisée a su démontrer une robustesse et une adaptabilité remarquables, même en environnement contraint. Le développement d’une interface web simple, BCancer.AI, illustre par ailleurs la faisabilité d’une intégration réelle de ce modèle dans un outil d’aide au diagnostic, en mettant l’accent sur l’accessibilité et l’interprétabilité.
+En conclusion, ce projet valide l’intérêt d’une conception sur mesure adaptée au contexte clinique, et montre que des solutions légères et bien calibrées peuvent rivaliser avec des modèles plus complexes. Les perspectives futures incluent l’élargissement du jeu de données, et le passage à des scénarios multi-classes pour enrichir les capacités diagnostiques.
+ Ce travail constitue ainsi une base solide pour le développement de systèmes d’IA fiables et applicables en anatomopathologie.
+Bibliographie
+[1] Santé publique France. (2025). Cancers – Données épidémiologiques. Consulté en avril 2025, https://www.santepubliquefrance.fr/maladies-et-traumatismes/cancers
+[2] Ameli. (2022). Understanding mammography.
+[3] International Agency for Research on Cancer (IARC). Atlas of Breast Cancer Screening – Figure 1 : Mammography.
+[4] Kocak, M. (2021). Magnetic Resonance Imaging (MRI).
+[5] The Iowa Clinic. (s.d.). New Technology Emerges in the Fight Against Breast Cancer.
+[6] DenseBreast-info.org. (s.d.). Breast Ultrasound – Screening Technologies.
+[7] Saini, M., & Susan, S. (2021). Breast histopathological image analysis using image processing techniques: A review. Journal of Medical Systems, 45(12), 1-15.
+[8] Institut Curie. (2025). Pathologie des cancers du sein – Classification histopathologique et caractères microscopiques. Présentation pédagogique en ligne. Consulté en avril 2025.
+[9] IBM. (2025). Qu’est-ce qu’un arbre de décisions ? https://www.ibm.com/fr-fr/think/topics/decision-trees
+[10] Sadashiva, S. (s.d.). K-Nearest Neighbor, Medium.com.
+[11] Analytics Vidhya. (s.d.). SVM – Support Vector Machine Algorithm Explained.
+[12] La Tribune. (2019). Article en ligne sur l’IA.
+[13] Naji, A., Hashem, M., & Abdurrahman, K. (2019). Computer-aided diagnosis system for histopathological image classification of breast cancer using deep learning. ResearchGate. Consulté en avril 2025.
+[14] Tian, Y., Zhong, Z., Ordonez, V., Kaiser, G., & Baishakhiay. (2020). Testing DNN Image Classifiers for Confusion & Bias Errors.
+[15] Lamprou, C. (2024). ResearchGate – Schematic of Convolutional Neural Network (CNN).
+[16] Rapport Amal final3.pdf.
+[17] PFE-JAWHER-FINAL-5.docx.
+[18] Lamprou, C., Papadopoulos, D., & Fotiadis, D. I. (2024). A Robust Framework for Cross-Domain Breast Cancer Detection from Mammograms Using Transfer Learning and Domain Adaptation. IEEE Xplore. https://ieeexplore.ieee.org/abstract/document/10704662
+[19] Document PDF n°7 fourni.
+[20] Kaur, A., Kaushal, C., Sandhu, J. K., Damaševičius, R., & Thakur, N. (2024). Histopathological Image Diagnosis for Breast Cancer Based on Deep Mutual Learning. Diagnostics, 14(1), 95.
+[21] Balasubramanian, A. A., et al. (2024). Ensemble Deep Learning-Based Image Classification for Breast Cancer Subtype and Invasiveness Diagnosis from Whole Slide Image Histopathology. Cancers, 16, 2222. https://doi.org/10.3390/cancers16122222
+[22] Gül, M. (2025). A Novel Local Binary Patterns-Based Approach and Proposed CNN Model to Diagnose Breast Cancer by Analyzing Histopathology Images. IEEE Access, 13, 39610–39620.
+[23] Gandhi, R., et al. (2024). Deep Learning-Based Automated Diagnostic Tool for Histopathological Images of Breast Cancer. IEEE Access.
+[24] Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep Learning. MIT Press. 
+Chapitre 6 : "Deep Feedforward Networks", section "Training a classifier with cross-entropy". https://www.deeplearningbook.org/
+[25] Robert, J. (2023). Python : Focus sur le langage le plus populaire. DataScientest. https://datascientest.com/python-tout-savoir
+[26] Python Software Foundation. (s.d.). Logos and trademarks. https://www.python.org/community/logos/
+[27] DataCamp. (s.d.). Anaconda vs Python: Key Differences. Consulté le 9 mai 2025.
+[28] Project Jupyter. (s.d.). Project Jupyter | Home. Consulté le 9 mai 2025.
+[29] Kaggle. (s.d.). Your Machine Learning and Data Science Community. Consulté le 9 mai 2025.
+[30] The Pandas Development Team. (s.d.). Pandas Documentation. Consulté le 9 mai 2025.
+[31] Harris, C. R., et al. (2020). Array programming with NumPy. Nature, 585(7825), 357–362. https://numpy.org
+[32] Scikit-learn. (s.d.). Scikit-learn: Machine Learning in Python. Journal of Machine Learning Research, 12, 2825–2830. https://scikit-learn.org
+[33] Abadi, M., et al. (2016). TensorFlow: Large-scale machine learning on heterogeneous systems. Software available from tensorflow.org. https://www.tensorflow.org
+[34] Waskom, M. L. (2021). Seaborn: Statistical data visualization. Journal of Open Source Software, 6(60), 3021. https://seaborn.pydata.org
+[35] OpenCV.org. (s.d.). About OpenCV. https://opencv.org/about/
+[36] Google Developers. (s.d.). TensorFlow documentation. https://developers.google.com/

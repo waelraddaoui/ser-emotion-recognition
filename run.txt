@@ -1,0 +1,47 @@
+=========================================================
+      GUIDE POUR LANCER LE PROJET SER STUDIO
+=========================================================
+
+1. DÉMARRER LE BACKEND (Base de données + API)
+---------------------------------------------------------
+Le backend doit toujours être lancé pour que l'application mobile puisse s'y connecter.
+
+Commandes à exécuter dans PowerShell (depuis la racine du projet PFE Issat) :
+    cd backend
+    ..\.venv311\Scripts\activate
+    uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
+
+(Laissez cette fenêtre ouverte pendant que vous utilisez l'application).
+
+
+2. EN CAS DE CHANGEMENT DE RÉSEAU WI-FI (IP)
+---------------------------------------------------------
+Si vous vous connectez à un autre Wi-Fi, l'adresse IP de votre PC va changer. L'application mobile ne trouvera plus le backend.
+Il faudra :
+    1. Trouver la nouvelle adresse IP de votre PC (tapez 'ipconfig' dans PowerShell et cherchez l'IPv4).
+    2. Ouvrir le projet et modifier la ligne "nativeApiUrl" avec la nouvelle adresse IP dans ces deux fichiers :
+       - frontend/src/environments/environment.ts
+       - frontend/src/environments/environment.development.ts
+
+
+3. RECOMPILER ET INSTALLER L'APPLICATION MOBILE (APK)
+---------------------------------------------------------
+Si vous avez modifié l'adresse IP ou le code Angular, vous devez recompiler l'application.
+
+Branchez votre téléphone (avec Débogage USB activé) et exécutez ces commandes depuis le dossier "frontend" :
+    
+    cd frontend
+    npm run build
+    npx cap sync android
+    cd android
+    java -Xmx64m -Xms64m -jar "gradle\wrapper\gradle-wrapper.jar" assembleDebug
+    cd ..
+    
+    # Installer l'APK généré sur votre téléphone :
+    & "C:\Users\marie\AppData\Local\Android\Sdk\platform-tools\adb.exe" install -r "android\app\build\outputs\apk\debug\app-debug.apk"
+
+
+NOTES SUPPLÉMENTAIRES :
+---------------------------------------------------------
+- L'option "cleartext: true" est activée dans "capacitor.config.ts" pour autoriser le HTTP (sans HTTPS).
+- Le backend principal (avec Auth) est dans le dossier "backend/app/main.py", ne pas confondre avec "api.py" ou "app.py" à la racine.

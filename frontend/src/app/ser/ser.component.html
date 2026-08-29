@@ -1,0 +1,340 @@
+<div class="app-container">
+  <header class="glass-panel text-center pulse-glow">
+    <h1>{{ 'STUDIO.TITLE' | translate }}</h1>
+    <p>{{ 'STUDIO.SUBTITLE' | translate }}</p>
+  </header>
+
+  <!-- Performance panel removed from Studio (moved to Admin performance page) -->
+
+  <main class="main-content">
+    <div class="tabs-container">
+      <div class="tabs-header">
+        <button class="tab-btn" [class.active]="activeTab === 'upload'" (click)="setActiveTab('upload')">
+          {{ 'STUDIO.TAB_UPLOAD' | translate }}
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'record'" (click)="setActiveTab('record')">
+          {{ 'STUDIO.TAB_RECORD' | translate }}
+        </button>
+        <button class="tab-btn" [class.active]="activeTab === 'example'" (click)="setActiveTab('example')">
+          {{ 'STUDIO.TAB_EXAMPLE' | translate }}
+        </button>
+      </div>
+
+      <!-- UPLOAD TAB -->
+      <section class="tab-panel glass-panel" *ngIf="activeTab === 'upload'">
+        <div class="upload-header">
+          <h2>{{ 'STUDIO.UPLOAD_TITLE' | translate }}</h2>
+        </div>
+
+        <div class="upload-zone"
+             [class.has-file]="selectedFile"
+             (dragover)="$event.preventDefault()"
+             (drop)="onDrop($event)">
+          <input type="file"
+                 id="fileInput"
+                 accept="audio/*"
+                 (change)="onFileSelected($event)"
+                 hidden>
+          <label for="fileInput" class="upload-label">
+            <span class="upload-icon">🎵</span>
+            <span *ngIf="!selectedFile">{{ 'STUDIO.UPLOAD_DROP' | translate }}</span>
+            <span *ngIf="selectedFile" class="filename">{{ selectedFile.name }}</span>
+          </label>
+        </div>
+
+        <div class="audio-player" *ngIf="audioUrl && selectedFile" style="margin-top: 1.5rem; text-align: center;">
+          <audio [src]="audioUrl" controls></audio>
+        </div>
+
+        <div class="action-section" *ngIf="selectedFile">
+          <button class="btn-primary" (click)="analyze()" [disabled]="isLoading || qualityScanState === 'scanning'">
+            {{ isLoading ? ('STUDIO.ANALYZING' | translate) : qualityScanState === 'scanning' ? ('STUDIO.QUALITY_TITLE' | translate) + '...' : ('STUDIO.ANALYZE' | translate) }}
+          </button>
+        </div>
+      </section>
+
+      <!-- RECORD TAB -->
+      <section class="tab-panel glass-panel" *ngIf="activeTab === 'record'">
+        <div class="upload-header">
+          <h2>{{ 'STUDIO.RECORD_TITLE' | translate }}</h2>
+        </div>
+
+        <div class="recorder-container">
+          <div class="recorder-card glass-panel">
+            <div class="recorder-hero">
+              <div class="recorder-hero__left">
+                <div class="mic-icon">🎤</div>
+                <div class="recorder-title">{{ 'STUDIO.RECORD_TITLE' | translate }}</div>
+                <div class="recorder-sub">{{ 'STUDIO.START_RECORD' | translate }}</div>
+              </div>
+              <div class="recorder-hero__right">
+                <button class="recorder-cta" *ngIf="!recorderState.isRecording" (click)="startRecording()">
+                  <span class="red-dot" aria-hidden="true"></span>
+                  {{ 'STUDIO.START_RECORD' | translate }}
+                </button>
+
+                <div class="small-actions" *ngIf="recorderState.isRecording">
+                  <button class="btn-small" *ngIf="!recorderState.isPaused" (click)="pauseRecording()">{{ 'STUDIO.PAUSE' | translate }}</button>
+                  <button class="btn-small" *ngIf="recorderState.isPaused" (click)="resumeRecording()">{{ 'STUDIO.RESUME' | translate }}</button>
+                  <button class="btn-small btn-stop" (click)="stopRecording()">{{ 'STUDIO.STOP' | translate }}</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="recorder-meta">
+              <div class="volume-meter" *ngIf="recorderState.isRecording && !recorderState.isPaused">
+                <div class="volume-bar" [style.height]="(volume * 100) + '%'"></div>
+              </div>
+
+              <div class="recorder-timer" *ngIf="recorderState.isRecording || recorderState.duration > 0">
+                {{ recorderState.duration | number:'1.0-0' }}s
+              </div>
+
+              <div class="alert error" *ngIf="recordingError">{{ recordingError }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="audio-player" *ngIf="audioUrl && recordedBlob" style="margin-top: 1.5rem; text-align: center;">
+          <audio [src]="audioUrl" controls></audio>
+        </div>
+
+        <div class="action-section" *ngIf="recordedBlob">
+          <button class="btn-primary" (click)="analyze()" [disabled]="isLoading || qualityScanState === 'scanning'">
+            {{ isLoading ? ('STUDIO.ANALYZING' | translate) : qualityScanState === 'scanning' ? ('STUDIO.QUALITY_TITLE' | translate) + '...' : ('STUDIO.ANALYZE' | translate) }}
+          </button>
+        </div>
+      </section>
+
+      <!-- EXAMPLES TAB -->
+      <section class="tab-panel glass-panel" *ngIf="activeTab === 'example'">
+        <div class="upload-header">
+          <h2>{{ 'STUDIO.EXAMPLE_TITLE' | translate }}</h2>
+        </div>
+
+        <div class="examples-grid">
+          <button *ngFor="let ex of examples"
+                  class="example-btn"
+                  [class.active]="selectedExample?.id === ex.id"
+                  (click)="selectExample(ex)">
+            <span class="emoji">{{ ex.emoji }}</span>
+            <span class="name">{{ ex.emotion }}</span>
+          </button>
+        </div>
+
+        <div class="audio-player" *ngIf="audioUrl && selectedExample" style="margin-top: 1.5rem; text-align: center;">
+          <p>🔊 Audio : {{ selectedExample.emotion }} ({{ selectedExample.filename }})</p>
+          <audio [src]="audioUrl" controls></audio>
+        </div>
+
+        <div class="action-section" *ngIf="selectedExample">
+          <button class="btn-primary" (click)="analyze()" [disabled]="isLoading || qualityScanState === 'scanning'">
+            {{ isLoading ? ('STUDIO.ANALYZING' | translate) : qualityScanState === 'scanning' ? ('STUDIO.QUALITY_TITLE' | translate) + '...' : ('STUDIO.ANALYZE' | translate) }}
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <section class="glass-panel quality-card" *ngIf="qualityScanState !== 'idle' || audioQuality || qualityScanError">
+    <div class="quality-card__header">
+      <div>
+        <p class="quality-eyebrow">{{ 'STUDIO.AUDIO_QUALITY_GATE' | translate }}</p>
+        <h2>{{ 'STUDIO.QUALITY_PREFLIGHT' | translate }}</h2>
+      </div>
+      <span class="quality-pill" [ngClass]="audioQuality?.verdict || qualityScanState">
+        {{ getQualityTierLabel() }}
+      </span>
+    </div>
+
+    <p class="quality-summary" *ngIf="qualityScanState === 'scanning'">
+      {{ 'STUDIO.QUALITY_SCANNING' | translate }}
+    </p>
+
+    <ng-container *ngIf="audioQuality as report">
+      <p class="quality-summary">
+        {{ getQualitySummary() }}
+      </p>
+
+      <div class="quality-metrics">
+        <div class="quality-metric">
+          <span class="quality-metric__label">{{ 'STUDIO.QUALITY_SCORE' | translate }}</span>
+          <span class="quality-metric__value">{{ report.score }}/100</span>
+        </div>
+        <div class="quality-metric">
+          <span class="quality-metric__label">{{ 'STUDIO.QUALITY_SILENCE' | translate }}</span>
+          <span class="quality-metric__value">{{ (report.silenceRatio * 100) | number:'1.0-0' }}%</span>
+        </div>
+        <div class="quality-metric">
+          <span class="quality-metric__label">{{ 'STUDIO.QUALITY_CLIPPING' | translate }}</span>
+          <span class="quality-metric__value">{{ (report.clippingRatio * 100) | number:'1.0-1' }}%</span>
+        </div>
+        <div class="quality-metric">
+          <span class="quality-metric__label">{{ 'STUDIO.QUALITY_PEAK' | translate }}</span>
+          <span class="quality-metric__value">{{ (report.peak * 100) | number:'1.0-0' }}%</span>
+        </div>
+      </div>
+
+      <div class="quality-meter">
+        <span [style.width]="report.score + '%'" [ngClass]="report.verdict"></span>
+      </div>
+
+      <div class="quality-columns">
+        <div class="quality-block">
+          <h3>{{ 'STUDIO.WARNINGS' | translate }}</h3>
+          <ul class="quality-list">
+            <li *ngFor="let issue of report.issues" [ngClass]="issue.severity">
+              <strong>{{ issue.title }}</strong>
+              <span>{{ issue.message }}</span>
+            </li>
+            <li *ngIf="!report.issues.length" class="good">
+              <strong>{{ 'STUDIO.QUALITY_ISSUES.CLEAN_TITLE' | translate }}</strong>
+              <span>{{ 'STUDIO.QUALITY_ISSUES.CLEAN_MSG' | translate }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="quality-block">
+          <h3>{{ 'STUDIO.RECOMMENDATIONS' | translate }}</h3>
+          <ul class="quality-suggestions">
+            <li *ngFor="let suggestion of report.recommendations">{{ suggestion }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="quality-action-hint">{{ getQualityActionHint() }}</p>
+    </ng-container>
+
+    <div class="quality-loading" *ngIf="qualityScanState === 'scanning'">
+      <span class="quality-spinner"></span>
+      <span>{{ 'STUDIO.QUALITY_SCANNING' | translate }}</span>
+    </div>
+
+    <div class="alert error quality-error" *ngIf="qualityScanError">
+      {{ qualityScanError }}
+    </div>
+  </section>
+
+  <div class="alert error glass-panel" *ngIf="errorMsg">
+    ❌ {{ errorMsg }}
+  </div>
+
+  <section class="result-section" *ngIf="currentResult">
+    <div class="result-dashboard slide-up"
+         [style.--emotion-color]="currentResult.color">
+      <div class="result-emoji">{{ currentResult.emoji }}</div>
+      <h2 class="result-emotion" [style.color]="currentResult.color">
+        {{ currentResult.emotion }}
+      </h2>
+      <div class="confidence-bar-bg">
+        <div class="confidence-bar-fill"
+             [style.width]="(currentResult.confidence * 100) + '%'"
+             [style.backgroundColor]="currentResult.color">
+        </div>
+      </div>
+      <p class="confidence-text">
+        {{ 'PROFILE.CONFIDENCE' | translate }}: <strong>{{ (currentResult.confidence * 100) | number:'1.1-1' }}%</strong>
+      </p>
+      <p class="description">{{ currentResult.description }}</p>
+
+      <div class="explainability-panel">
+        <div class="explainability-header">
+          <div>
+            <p class="explainability-eyebrow">{{ 'STUDIO.EXPLAINABILITY_EXPLAIN' | translate }}</p>
+            <h3>{{ 'STUDIO.EXPLAINABILITY_TITLE' | translate }}</h3>
+          </div>
+          <span class="explainability-badge" [ngClass]="confidenceTier">
+            {{ getConfidenceTierLabel() }}
+          </span>
+        </div>
+
+        <p class="explainability-note">{{ explainabilityNote }}</p>
+
+        <div class="top-predictions" *ngIf="topPredictions.length">
+          <div class="top-prediction" *ngFor="let item of topPredictions">
+            <div class="top-prediction__identity">
+              <span class="top-prediction__rank">#{{ item.rank }}</span>
+              <span class="top-prediction__emoji">{{ item.emoji }}</span>
+              <span class="top-prediction__emotion">{{ item.emotion }}</span>
+            </div>
+            <div class="top-prediction__bar" aria-hidden="true">
+              <span [style.width]="(item.confidence * 100) + '%'" [style.backgroundColor]="item.color"></span>
+            </div>
+            <div class="top-prediction__value">{{ (item.confidence * 100) | number:'1.0-0' }}%</div>
+          </div>
+        </div>
+
+        <div class="explainability-footer">
+          <span>{{ 'STUDIO.DECISION_GAP' | translate }}: {{ (decisionGap * 100) | number:'1.0-0' }}%</span>
+          <span>{{ 'STUDIO.BUILT_PROBABILITY' | translate }}</span>
+        </div>
+      </div>
+
+      <div class="result-plots">
+        <h3 class="plot-title">{{ 'STUDIO.CONFIDENCE_DIST' | translate }}</h3>
+        <img [src]="'data:image/png;base64,' + currentResult.img_prob" alt="Probabilities plot">
+
+        <h3 class="plot-title">{{ 'STUDIO.MFCC' | translate }}</h3>
+        <img [src]="'data:image/png;base64,' + currentResult.img_mfcc" alt="MFCC plot">
+
+        <h3 class="plot-title">{{ 'STUDIO.WAVEFORM' | translate }}</h3>
+        <img [src]="'data:image/png;base64,' + currentResult.img_wave" alt="Waveform plot">
+      </div>
+
+      <div class="report-box" *ngIf="currentPredictionId && activeTab !== 'example'">
+        <div class="report-box__header">
+          <div class="report-box__eyebrow">
+            <span class="report-box__icon">⚠️</span>
+            <span>{{ 'STUDIO.REPORT_BOX_SIGNALEMENT' | translate }}</span>
+          </div>
+          <h3>{{ 'STUDIO.REPORT_ERROR_TITLE' | translate }}</h3>
+          <p>{{ 'STUDIO.REPORT_ERROR_DESC' | translate }}</p>
+        </div>
+
+        <div class="report-box__status">
+          <div class="report-box__status-item">
+            <span class="status-dot"></span>
+            <span>{{ 'STUDIO.READY_SEND' | translate }}</span>
+          </div>
+          <div class="report-box__status-item">
+            <span class="status-badge">{{ 'STUDIO.SECURE' | translate }}</span>
+          </div>
+        </div>
+
+        <div class="report-box__form">
+          <div class="form-group">
+            <label for="reportReason">{{ 'STUDIO.REASON' | translate }}</label>
+            <select id="reportReason" [(ngModel)]="reportReason" class="form-select premium-select">
+              <option value="wrong_emotion">{{ 'STUDIO.REASONS.WRONG_EMOTION' | translate }}</option>
+              <option value="low_quality">{{ 'STUDIO.REASONS.LOW_QUALITY' | translate }}</option>
+              <option value="noise_issue">{{ 'STUDIO.REASONS.NOISE' | translate }}</option>
+              <option value="other">{{ 'STUDIO.REASONS.OTHER' | translate }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="reportComment">{{ 'STUDIO.COMMENT' | translate }}</label>
+            <textarea
+              id="reportComment"
+              [(ngModel)]="reportComment"
+              class="form-input premium-input"
+              rows="4"
+              [placeholder]="'STUDIO.REPORT_COMMENT_PLACEHOLDER' | translate"></textarea>
+          </div>
+        </div>
+
+        <div class="report-box__footer">
+          <p class="report-box__hint">{{ 'STUDIO.REPORT_BOX_HINT' | translate }}</p>
+            <div class="action-buttons report-box__actions">
+            <button class="premium-submit" (click)="reportPrediction()" [disabled]="isReporting">
+              {{ isReporting ? ('STUDIO.REPORT_SENDING' | translate) : ( 'STUDIO.SEND_ADMIN' | translate ) }}
+            </button>
+          </div>
+        </div>
+
+        <div class="alert success" *ngIf="reportMessage">✅ {{ reportMessage }}</div>
+        <div class="alert error" *ngIf="reportError">❌ {{ reportError }}</div>
+      </div>
+    </div>
+  </section>
+</div>
